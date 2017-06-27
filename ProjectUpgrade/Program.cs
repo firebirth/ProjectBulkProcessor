@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
 using Microsoft.Extensions.Configuration;
 
 namespace ProjectUpgrade
@@ -36,15 +32,23 @@ namespace ProjectUpgrade
 
         private static void DeleteDeprecatedFiles(string rootFolder)
         {
-            var propertyFolders = Directory
+            var assemblyInfoFiles = Directory
                 .GetFiles(rootFolder, "AssemblyInfo.cs", SearchOption.AllDirectories)
-                .Select(f => new FileInfo(f).Directory);
+                .Select(f => new FileInfo(f));
             var packageFiles = Directory.GetFiles(rootFolder, "packages.config", SearchOption.AllDirectories)
                                         .Select(f => new FileInfo(f));
 
-            foreach (var itemToDelete in propertyFolders)
+            foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
-                itemToDelete.Delete(true);
+                var deleteFolder = assemblyInfoFile.Directory.GetFiles().Length == 1;
+                if (deleteFolder)
+                {
+                    assemblyInfoFile.Directory.Delete(true);
+                }
+                else
+                {
+                    assemblyInfoFile.Delete();
+                }
             }
 
             foreach (var packageFile in packageFiles)
