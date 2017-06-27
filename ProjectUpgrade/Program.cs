@@ -30,6 +30,27 @@ namespace ProjectUpgrade
                     newProject.Save(fs);
                 }
             }
+
+            DeleteDeprecatedFiles(configuration["rootPath"]);
+        }
+
+        private static void DeleteDeprecatedFiles(string rootFolder)
+        {
+            var propertyFolders = Directory
+                .GetFiles(rootFolder, "AssemblyInfo.cs", SearchOption.AllDirectories)
+                .Select(f => new FileInfo(f).Directory);
+            var packageFiles = Directory.GetFiles(rootFolder, "packages.config", SearchOption.AllDirectories)
+                                        .Select(f => new FileInfo(f));
+
+            foreach (var itemToDelete in propertyFolders)
+            {
+                itemToDelete.Delete(true);
+            }
+
+            foreach (var packageFile in packageFiles)
+            {
+                packageFile.Delete();
+            }
         }
     }
 }
