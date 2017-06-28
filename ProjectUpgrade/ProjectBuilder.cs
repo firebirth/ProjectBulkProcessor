@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using Microsoft.Extensions.Configuration;
+using ProjectUpgrade.Models;
 
 namespace ProjectUpgrade
 {
@@ -11,31 +11,17 @@ namespace ProjectUpgrade
     {
         private readonly IConfigurationRoot _configuration;
         private readonly XmlDocument _newProject;
-        private readonly FileInfo _projectFile;
         private readonly XmlElement _root;
+        private readonly ProjectModel _projectModel;
 
         public ProjectBuilder(FileInfo projectFile, IConfigurationRoot configuration)
         {
             if (projectFile?.Exists != true)
                 throw new ArgumentException("Provided file doesn't exist", nameof(projectFile));
 
-            _projectFile = projectFile;
             _configuration = configuration;
 
-            var existingProject = new XmlDocument();
-            using (var fs = _projectFile.OpenRead())
-            {
-                existingProject.Load(fs);
-            }
-
-            ProjectReferences = existingProject.GetElementsByTagName("ProjectReference")
-                                                .OfType<XmlElement>()
-                                                .Select(x => x.GetAttribute("Include"))
-                                                .ToList();
-
-            IsExecutable = existingProject.GetElementsByTagName("OutputType")
-                                           .OfType<XmlElement>()
-                                           .Any(x => x.InnerText == "Exe");
+            _projectModel = ProjectModel.Parse(projectFile);
             
             _newProject = new XmlDocument();
             _root = _newProject.CreateElement("Project");
@@ -43,22 +29,18 @@ namespace ProjectUpgrade
             _newProject.AppendChild(_root);
         }
 
-        private bool IsExecutable { get; }
-
-        private List<string> ProjectReferences { get; }
-
         public ProjectBuilder GenerateProjectReferenceSection()
         {
-            if (!ProjectReferences.Any())
+            if (!_projectModel.ProjectReferences.Any())
                 return this;
 
             var dependencyItemGroup = _newProject.CreateElement("ItemGroup");
             _root.AppendChild(dependencyItemGroup);
 
-            foreach (var reference in ProjectReferences)
+            foreach (var reference in _projectModel.ProjectReferences)
             {
                 var childNode = _newProject.CreateElement("ProjectReference");
-                childNode.SetAttribute("Include", reference);
+                childNode.SetAttribute("Include", reference.RelativePath);
                 dependencyItemGroup.AppendChild(childNode);
             }
 
@@ -67,33 +49,16 @@ namespace ProjectUpgrade
 
         public ProjectBuilder GenerateDependenciesSection()
         {
-            var packagesFile = _projectFile.Directory
-                                           .GetFiles("packages.config", SearchOption.TopDirectoryOnly)
-                                           .SingleOrDefault();
-            if (packagesFile == null)
+            if (!_projectModel.ProjectDependencies.Any())
                 return this;
             
-            var packagesDoc = new XmlDocument();
-            using (var fs = packagesFile.OpenRead())
-            {
-                packagesDoc.Load(fs);
-            }
-
-            var packagesInfo = packagesDoc.GetElementsByTagName("package")
-                                          .OfType<XmlElement>()
-                                          .Select(x => new
-                                          {
-                                              id = x.GetAttribute("id"),
-                                              version = x.GetAttribute("version")
-                                          });
-
             var dependencyItemGroup = _newProject.CreateElement("ItemGroup");
 
-            foreach (var info in packagesInfo)
+            foreach (var info in _projectModel.ProjectDependencies)
             {
                 var childNode = _newProject.CreateElement("PackageReference");
-                childNode.SetAttribute("Version", info.version);
-                childNode.SetAttribute("Include", info.id);
+                childNode.SetAttribute("Version", info.Version);
+                childNode.SetAttribute("Include", info.PackageId);
                 dependencyItemGroup.AppendChild(childNode);
             }
             
@@ -123,7 +88,7 @@ namespace ProjectUpgrade
             AddNodeFromConfig(generalPropGroup, "version");
             AddNodeFromConfig(generalPropGroup, "product");
 
-            if (IsExecutable)
+            if (_projectModel.IsExecutable)
             {
                 var childNode = _newProject.CreateElement("OutputType");
                 childNode.InnerText = "Exe";
