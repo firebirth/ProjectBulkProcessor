@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using ProjectUpgrade.Models;
 
 namespace ProjectUpgrade
 {
@@ -12,16 +13,17 @@ namespace ProjectUpgrade
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            foreach (var projectFile in Directory.GetFiles(configuration["rootPath"], "*.csproj", SearchOption.AllDirectories)
-                                                 .Select(p => new FileInfo(p)))
+            foreach (var projectModel in Directory
+                .GetFiles(configuration["rootPath"], "*.csproj", SearchOption.AllDirectories)
+                .Select(ProjectModel.Parse))
             {
-                var newProject = new ProjectBuilder(projectFile, configuration)
+                var newProject = new ProjectBuilder(projectModel, configuration)
                     .GenerateCommonSection()
                     .GenerateDependenciesSection()
                     .GenerateProjectReferenceSection()
                     .Build();
 
-                using (var fs = new FileStream(projectFile.FullName, FileMode.Truncate))
+                using (var fs = new FileStream(projectModel.ProjectFile.FullName, FileMode.Truncate))
                 {
                     newProject.Save(fs);
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Xml;
 using Microsoft.Extensions.Configuration;
@@ -14,14 +13,11 @@ namespace ProjectUpgrade
         private readonly XmlElement _root;
         private readonly ProjectModel _projectModel;
 
-        public ProjectBuilder(FileInfo projectFile, IConfigurationRoot configuration)
+        public ProjectBuilder(ProjectModel projectModel, IConfigurationRoot configuration)
         {
-            if (projectFile?.Exists != true)
-                throw new ArgumentException("Provided file doesn't exist", nameof(projectFile));
-
             _configuration = configuration;
 
-            _projectModel = ProjectModel.Parse(projectFile);
+            _projectModel = projectModel;
             
             _newProject = new XmlDocument();
             _root = _newProject.CreateElement("Project");

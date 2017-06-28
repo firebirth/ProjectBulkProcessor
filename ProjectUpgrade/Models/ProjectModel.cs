@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -23,8 +24,13 @@ namespace ProjectUpgrade.Models
             IsExecutable = isExecutable;
         }
 
-        public static ProjectModel Parse(FileInfo projectFile)
+        public static ProjectModel Parse(string projectFilePath)
         {
+            if (!File.Exists(projectFilePath))
+                throw new ArgumentException($"Project file doesn't exist in path {projectFilePath}");
+
+            var projectFile = new FileInfo(projectFilePath);
+
             var existingProject = new XmlDocument();
             using (var fs = projectFile.OpenRead())
             {
