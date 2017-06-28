@@ -10,7 +10,6 @@ namespace ProjectUpgrade
     public class ProjectBuilder
     {
         private readonly IConfigurationRoot _configuration;
-        private readonly XmlDocument _existingProject;
         private readonly XmlDocument _newProject;
         private readonly FileInfo _projectFile;
         private readonly XmlElement _root;
@@ -23,18 +22,18 @@ namespace ProjectUpgrade
             _projectFile = projectFile;
             _configuration = configuration;
 
-            _existingProject = new XmlDocument();
+            var existingProject = new XmlDocument();
             using (var fs = _projectFile.OpenRead())
             {
-                _existingProject.Load(fs);
+                existingProject.Load(fs);
             }
 
-            ProjectReferences = _existingProject.GetElementsByTagName("ProjectReference")
+            ProjectReferences = existingProject.GetElementsByTagName("ProjectReference")
                                                 .OfType<XmlElement>()
                                                 .Select(x => x.GetAttribute("Include"))
                                                 .ToList();
 
-            IsExecutable = _existingProject.GetElementsByTagName("OutputType")
+            IsExecutable = existingProject.GetElementsByTagName("OutputType")
                                            .OfType<XmlElement>()
                                            .Any(x => x.Value == "Exe");
             
@@ -73,14 +72,20 @@ namespace ProjectUpgrade
                                            .SingleOrDefault();
             if (packagesFile == null)
                 return this;
+            
+            var packagesDoc = new XmlDocument();
+            using (var fs = packagesFile.OpenRead())
+            {
+                packagesDoc.Load(fs);
+            }
 
-            var packagesInfo = _existingProject.GetElementsByTagName("package")
-                                               .OfType<XmlElement>()
-                                               .Select(x => new
-                                               {
-                                                   id = x.GetAttribute("x"),
-                                                   version = x.GetAttribute("version")
-                                               });
+            var packagesInfo = packagesDoc.GetElementsByTagName("package")
+                                          .OfType<XmlElement>()
+                                          .Select(x => new
+                                          {
+                                              id = x.GetAttribute("id"),
+                                              version = x.GetAttribute("version")
+                                          });
 
             var dependencyItemGroup = _newProject.CreateElement("ItemGroup");
 
@@ -91,12 +96,12 @@ namespace ProjectUpgrade
                 childNode.SetAttribute("Include", info.id);
                 dependencyItemGroup.AppendChild(childNode);
             }
-
+            
             _root.AppendChild(dependencyItemGroup);
 
             return this;
         }
-        
+
         public ProjectBuilder GenerateCommonSection()
         {
             var generalPropGroup = _newProject.CreateElement("PropertyGroup");
