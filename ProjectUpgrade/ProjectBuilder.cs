@@ -35,7 +35,7 @@ namespace ProjectUpgrade
 
             IsExecutable = existingProject.GetElementsByTagName("OutputType")
                                            .OfType<XmlElement>()
-                                           .Any(x => x.Value == "Exe");
+                                           .Any(x => x.InnerText == "Exe");
             
             _newProject = new XmlDocument();
             _root = _newProject.CreateElement("Project");
