@@ -53,8 +53,8 @@ namespace ProjectUpgrade
             foreach (var info in _projectModel.ProjectDependencies)
             {
                 var childNode = _newProject.CreateElement("PackageReference");
-                childNode.SetAttribute("Version", info.Version);
                 childNode.SetAttribute("Include", info.PackageId);
+                childNode.SetAttribute("Version", info.Version);
                 dependencyItemGroup.AppendChild(childNode);
             }
             
