@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectUpgrade", "ProjectUpgrade\ProjectUpgrade.csproj", "{94EE586C-CB28-407F-B13C-B9BAE16D1E05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectUpgrade.Tests", "ProjectUpgrade.Tests\ProjectUpgrade.Tests.csproj", "{9ADE87A7-DAC9-43E1-AB04-D5A88A4B1A78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,15 @@ Global
 		{94EE586C-CB28-407F-B13C-B9BAE16D1E05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94EE586C-CB28-407F-B13C-B9BAE16D1E05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94EE586C-CB28-407F-B13C-B9BAE16D1E05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADE87A7-DAC9-43E1-AB04-D5A88A4B1A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADE87A7-DAC9-43E1-AB04-D5A88A4B1A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADE87A7-DAC9-43E1-AB04-D5A88A4B1A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADE87A7-DAC9-43E1-AB04-D5A88A4B1A78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A2D47F2-AAC3-45D5-91FF-600B0337FC4C}
 	EndGlobalSection
 EndGlobal
