@@ -29,7 +29,7 @@ namespace ProjectUpgrade.Processors
             var projectFiles = rootDirectory.GetFiles("*.csproj", SearchOption.AllDirectories);
             if (!projectFiles.Any())
             {
-                throw new FileNotFoundException($"No project files found in {rootFolder} or any of it subdirectories.");
+                yield break;
             }
 
             foreach (var projectFile in projectFiles)

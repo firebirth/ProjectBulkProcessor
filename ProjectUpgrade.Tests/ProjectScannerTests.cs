@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-using System.Xml;
 using FluentAssertions;
 using Moq;
 using ProjectUpgrade.Interfaces;
@@ -50,13 +49,11 @@ namespace ProjectUpgrade.Tests
         }
 
         [Fact]
-        public void ShouldThrowIfProjectFilesWereNotFound()
+        public void ShouldNotThrowIfProjectFilesWereNotFoundAndReturnEmptyEnumerable()
         {
-            Func<IEnumerable> sutAction = () => _sut.ScanForProjects(ExistingEmptyDirectory);
+            var result = _sut.ScanForProjects(ExistingEmptyDirectory);
 
-            sutAction.Enumerating()
-                     .Should().ThrowExactly<FileNotFoundException>()
-                     .WithMessage($"No project files found in {ExistingEmptyDirectory} or any of it subdirectories.");
+            result.Should().BeEmpty();
         }
 
         [Fact]

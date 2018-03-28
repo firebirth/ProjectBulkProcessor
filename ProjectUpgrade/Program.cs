@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using ProjectUpgrade.Configration;
-using ProjectUpgrade.Processors;
 
 namespace ProjectUpgrade
 {
