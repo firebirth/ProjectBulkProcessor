@@ -8,6 +8,7 @@ namespace ProjectUpgrade.Configration
         public EnrichParameters(string rootPath, string targetFramework, string copyright, string company, string authors, string description, string packageLicenseUrl, string packageProjectUrl, string packageIconUrl, string repositoryUrl, string repositoryType, string packageTags, string packageReleaseNotes, string packageId, string version, string product)
         {
             RootPath = rootPath;
+            // all of below go to NEW PropertyGroup as nodes with inner text, with node names starting from capital letter
             TargetFramework = targetFramework;
             Copyright = copyright;
             Company = company;

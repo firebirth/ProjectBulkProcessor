@@ -4,8 +4,8 @@ namespace ProjectUpgrade.Interfaces
 {
     public interface IProjectBuilder
     {
-        IProjectGroupBuilder AddGroup(string groupName);
-
+        IProjectGroupBuilder AddItemGroup();
+        IProjectGroupBuilder AddPropertyGroup();
         XDocument Build();
     }
 

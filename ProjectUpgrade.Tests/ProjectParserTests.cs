@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions.TestingHelpers;
+﻿using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using FluentAssertions;
 using ProjectUpgrade.Processors;
@@ -43,8 +44,7 @@ namespace ProjectUpgrade.Tests
                                                                                         bool hasPackageDependency,
                                                                                         bool expectedIsExecutable)
         {
-            var fileName = _fileSystem.AllFiles.Single(f => f.EndsWith(".csproj") && f.Contains(projectName) && f.Contains(directoryName));
-            var fileInfo = _fileSystem.FileInfo.FromFileName(fileName);
+            var fileInfo = GetFileInfo(projectName, directoryName);
 
             var result = _sut.ParseProject(fileInfo);
 
@@ -52,7 +52,7 @@ namespace ProjectUpgrade.Tests
                   .WhenShouldHavePackageDependency(hasPackageDependency)
                   .And.WhenShouldHaveProjectReference(hasProjectReference)
                   .Then.BeExecutable(expectedIsExecutable)
-                  .And.HaveLocation(fileName)
+                  .And.HaveLocation(fileInfo.FullName)
                   .And.HaveProjectReference(ReferencedProjectPath)
                   .And.HavePackageDependency(PackageId, PackageVersion);
         }
@@ -60,12 +60,17 @@ namespace ProjectUpgrade.Tests
         [Fact]
         public void ShouldParseMultipleReferences()
         {
-            var fileName = _fileSystem.AllFiles.Single(f => f.EndsWith(".csproj") && f.Contains(MultipleReferenceProject) && f.Contains(DirectoryWithPackages));
-            var fileInfo = _fileSystem.FileInfo.FromFileName(fileName);
+            var fileInfo = GetFileInfo(MultipleReferenceProject, DirectoryWithPackages);
 
             var result = _sut.ParseProject(fileInfo);
 
             result.ProjectReferences.Should().HaveCount(2);
+        }
+
+        private FileInfoBase GetFileInfo(string projectName, string directoryName)
+        {
+            var fileName = _fileSystem.AllFiles.Single(f => f.EndsWith(".csproj") && f.Contains(projectName) && f.Contains(directoryName));
+            return _fileSystem.FileInfo.FromFileName(fileName);
         }
 
         private static MockFileSystem SetFileSystem()

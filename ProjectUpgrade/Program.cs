@@ -9,7 +9,7 @@ namespace ProjectUpgrade
         public static void Main(string[] args)
         {
             Parser.Default.ParseArguments<UpgradeParameters, EnrichParameters>(args)
-                  .MapResult((UpgradeParameters upgrade) => UpgradeProcessor.ProcessProjects(upgrade),
+                  .MapResult((UpgradeParameters upgrade) => UpgradeProjects(upgrade),
                              (EnrichParameters enrich) => EnrichProjects(enrich),
                              errors => -1);
         }
@@ -19,6 +19,9 @@ namespace ProjectUpgrade
             throw new System.NotImplementedException();
         }
 
-        
+        private static int UpgradeProjects(UpgradeParameters upgrade)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

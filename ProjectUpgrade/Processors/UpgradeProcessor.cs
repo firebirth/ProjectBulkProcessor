@@ -1,47 +1,35 @@
 ﻿using System.IO;
 using System.IO.Abstractions;
 using ProjectUpgrade.Configration;
+using ProjectUpgrade.Extensions;
+using ProjectUpgrade.Interfaces;
 
 namespace ProjectUpgrade.Processors
 {
-    public static class UpgradeProcessor
+    public class UpgradeProcessor
     {
-        public static int ProcessProjects(UpgradeParameters parameters)
+        private readonly IFileSystem _fileSystem;
+        private readonly IProjectScanner _projectScanner;
+
+        public UpgradeProcessor(IFileSystem fileSystem, IProjectScanner projectScanner)
         {
-            var scanner = new ProjectScanner(null, null);
-            var models = scanner.ScanForProjects(parameters.RootDirectory);
+            _fileSystem = fileSystem;
+            _projectScanner = projectScanner;
+        }
+
+        public int ProcessProjects(UpgradeParameters parameters)
+        {
+            var models = _projectScanner.ScanForProjects(parameters.RootDirectory);
 
             foreach (var projectModel in models)
             {
-                var projectBuilder = new ProjectBuilder();
+                var projectBuilder = new ProjectBuilder().AddProjectReferences(projectModel.ProjectReferences)
+                                                         .AddPackageDependencies(projectModel.PackageDependencies)
+                                                         .SetProjectType(projectModel.IsExecutable);
 
-                var groupBuilder = projectBuilder.AddGroup("ItemGroup");
-                foreach (var reference in projectModel.ProjectReferences)
+                using (var fs = projectModel.ProjectFile.OpenWrite())
                 {
-                    groupBuilder.WithElement("ProjectReference")
-                                .WithAttribute("Include", reference.RelativePath);
-                }
-
-                groupBuilder = groupBuilder.AddGroup("ItemGroup");
-                foreach (var dependency in projectModel.PackageDependencies)
-                {
-                    groupBuilder.WithElement("PackageReference")
-                                .WithAttribute("Include", dependency.PackageId)
-                                .WithAttribute("Version", dependency.Version);
-                }
-
-                if (projectModel.IsExecutable)
-                {
-                    groupBuilder = groupBuilder.AddGroup("PropertyGroup");
-                    groupBuilder.WithElement("OutputType")
-                                .WithNodeValue("Exe");
-                }
-
-                var result = groupBuilder.Build();
-
-                using (var fs = new FileStream(projectModel.ProjectFile.FullName, FileMode.Truncate))
-                {
-                    result.Save(fs);
+                    projectBuilder.Build().Save(fs);
                 }
             }
 
@@ -50,10 +38,11 @@ namespace ProjectUpgrade.Processors
             return 1;
         }
 
-        private static void DeleteDeprecatedFiles(string rootFolder)
+        private void DeleteDeprecatedFiles(string rootFolder)
         {
-            var assemblyInfoFiles = rootFolder.GetFiles("AssemblyInfo.cs", SearchOption.AllDirectories);
-            var packageFiles = rootFolder.GetFiles("packages.config", SearchOption.AllDirectories);
+            var rootDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(rootFolder);
+            var assemblyInfoFiles = rootDirectory.GetFiles("AssemblyInfo.cs", SearchOption.AllDirectories);
+            var packageFiles = rootDirectory.GetFiles("packages.config", SearchOption.AllDirectories);
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {

@@ -14,19 +14,13 @@ namespace ProjectUpgrade.Processors
         public ProjectBuilder()
         {
             _projectDocument = new XmlDocument();
-            _root = _projectDocument.CreateElement("Project");
-            _root.SetAttribute("Sdk", "Microsoft.NET.Sdk");
+            _root = GetRootElement(_projectDocument);
             _projectDocument.AppendChild(_root);
         }
 
-        public IProjectGroupBuilder AddGroup(string groupName)
-        {
-            AttachHangingElements();
+        public IProjectGroupBuilder AddItemGroup() => AddGroupInternal("ItemGroup");
 
-            _currentGroup = _projectDocument.CreateElement(groupName);
-
-            return this;
-        }
+        public IProjectGroupBuilder AddPropertyGroup() => AddGroupInternal("PropertyGroup");
 
         IProjectElementBuilder IProjectGroupBuilder.WithElement(string elementName)
         {
@@ -61,6 +55,15 @@ namespace ProjectUpgrade.Processors
             }
         }
 
+        private IProjectGroupBuilder AddGroupInternal(string groupName)
+        {
+            AttachHangingElements();
+
+            _currentGroup = _projectDocument.CreateElement(groupName);
+
+            return this;
+        }
+
         private void AttachHangingElements()
         {
             if (_currentElement != null)
@@ -73,6 +76,13 @@ namespace ProjectUpgrade.Processors
             {
                 _root.AppendChild(_currentGroup);
             }
+        }
+
+        private static XmlElement GetRootElement(XmlDocument document)
+        {
+            var root = document.CreateElement("Project");
+            root.SetAttribute("Sdk", "Microsoft.NET.Sdk");
+            return root;
         }
     }
 }
