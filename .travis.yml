@@ -5,4 +5,4 @@ install:
  - nuget restore ProjectUpgrade.sln
  - nuget install xunit.runners -OutputDirectory testrunner
 script:
- - dotnet test -c Release
+ - dotnet test ProjectUpgrade.Tests -c Release
