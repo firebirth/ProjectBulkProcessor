@@ -33,7 +33,7 @@ namespace ProjectUpgrade.Tests
             _fileSystem = SetFileSystem();
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(DirectoryWithPackages, ProjectWithReferenceAndExe, true, true, true)]
         [InlineData(DirectoryWithPackages, ProjectWithReference, true, true, false)]
         [InlineData(DirectoryWithPackages, ProjectWithExe, false, true, true)]
@@ -61,7 +61,7 @@ namespace ProjectUpgrade.Tests
                   .And.HavePackageDependency(PackageId, PackageVersion);
         }
 
-        [Fact]
+        [SkippableFact]
         public void ShouldParseMultipleReferences()
         {
             var fileInfo = GetFileInfo(MultipleReferenceProject, DirectoryWithPackages);
