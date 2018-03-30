@@ -1,0 +1,8 @@
+language: csharp
+solution: ProjectUpgrade.sln
+dotnet: 2.1.4
+install:
+ - nuget restore ProjectUpgrade.sln
+ - nuget install xunit.runners -OutputDirectory testrunner
+script:
+ - dotnet test -c Release
