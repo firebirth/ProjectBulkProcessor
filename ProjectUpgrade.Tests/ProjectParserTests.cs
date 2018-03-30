@@ -1,6 +1,7 @@
 ﻿using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Runtime.InteropServices;
 using FluentAssertions;
 using ProjectUpgrade.Processors;
 using ProjectUpgrade.Tests.Assertions;
@@ -22,9 +23,12 @@ namespace ProjectUpgrade.Tests
         private const string PackageVersion = "testVersion";
         private readonly ProjectParser _sut;
         private readonly MockFileSystem _fileSystem;
+        private static readonly bool RunningOnWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         public ProjectParserTests()
         {
+            Skip.IfNot(RunningOnWindows);
+
             _sut = new ProjectParser();
             _fileSystem = SetFileSystem();
         }
