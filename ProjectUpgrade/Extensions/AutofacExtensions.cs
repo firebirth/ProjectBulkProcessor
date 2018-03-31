@@ -19,13 +19,12 @@ namespace ProjectUpgrade.Extensions
 
         public static IList<Exception> FindConfigurationProblems(this IContainer container)
         {
-            var services = container
-                .ComponentRegistry
-                .Registrations
-                .SelectMany(x => x.Services)
-                .OfType<TypedService>()
-                .Where(x => !x.ServiceType.Name.StartsWith("Autofac"))
-                .ToList();
+            var services = container.ComponentRegistry
+                                    .Registrations
+                                    .SelectMany(x => x.Services)
+                                    .OfType<TypedService>()
+                                    .Where(x => !x.ServiceType.Name.StartsWith("Autofac"))
+                                    .ToList();
             var exceptions = new List<Exception>();
             foreach (var typedService in services)
             {
@@ -38,6 +37,7 @@ namespace ProjectUpgrade.Extensions
                     exceptions.Add(ex);
                 }
             }
+
             return exceptions;
         }
     }
