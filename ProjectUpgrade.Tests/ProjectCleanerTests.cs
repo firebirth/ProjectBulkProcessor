@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.IO.Abstractions.TestingHelpers;
-using FluentAssertions;
+﻿using System.IO.Abstractions.TestingHelpers;
 using ProjectUpgrade.Tests.Assertions;
 using ProjectUpgrade.Upgrade.Processors;
 using Xunit;

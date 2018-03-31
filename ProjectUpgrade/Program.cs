@@ -2,6 +2,7 @@
 using Autofac;
 using CommandLine;
 using ProjectUpgrade.Configration;
+using ProjectUpgrade.Extensions;
 using ProjectUpgrade.Upgrade;
 
 namespace ProjectUpgrade
@@ -12,6 +13,8 @@ namespace ProjectUpgrade
 
         public static void Main(string[] args)
         {
+            Container.AssertConfigurationIsValid();
+
             Parser.Default.ParseArguments<UpgradeParameters, EnrichParameters>(args)
                   .MapResult((UpgradeParameters upgrade) => UpgradeProjects(upgrade),
                              (EnrichParameters enrich) => EnrichProjects(enrich),
@@ -20,7 +23,7 @@ namespace ProjectUpgrade
 
         private static int EnrichProjects(EnrichParameters enrich)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private static int UpgradeProjects(UpgradeParameters upgrade)
