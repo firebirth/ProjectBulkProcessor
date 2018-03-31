@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using ProjectUpgrade.Models;
 
-namespace ProjectUpgrade.Interfaces
+namespace ProjectUpgrade.Upgrade.Interfaces
 {
     public interface IProjectParser
     {

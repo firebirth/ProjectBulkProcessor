@@ -1,4 +1,4 @@
-﻿namespace ProjectUpgrade.Interfaces
+﻿namespace ProjectUpgrade.Upgrade.Interfaces
 {
     public interface IProjectCleaner
     {

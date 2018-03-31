@@ -1,17 +1,18 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using ProjectUpgrade.Configration;
-using ProjectUpgrade.Extensions;
-using ProjectUpgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Extensions;
+using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Processors;
 
-namespace ProjectUpgrade.Processors
+namespace ProjectUpgrade.Upgrade
 {
-    public class UpgradeProcessor
+    public class UpgradeOrchestrator
     {
         private readonly IProjectScanner _projectScanner;
         private readonly IProjectCleaner _projectCleaner;
 
-        public UpgradeProcessor(IProjectScanner projectScanner, IProjectCleaner projectCleaner)
+        public UpgradeOrchestrator(IProjectScanner projectScanner, IProjectCleaner projectCleaner)
         {
             _projectScanner = projectScanner;
             _projectCleaner = projectCleaner;

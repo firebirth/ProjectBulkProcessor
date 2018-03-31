@@ -5,8 +5,8 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
 using Moq;
-using ProjectUpgrade.Interfaces;
-using ProjectUpgrade.Processors;
+using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Processors;
 using Xunit;
 
 namespace ProjectUpgrade.Tests

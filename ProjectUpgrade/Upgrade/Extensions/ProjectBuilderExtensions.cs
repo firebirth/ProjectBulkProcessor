@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using ProjectUpgrade.Interfaces;
 using ProjectUpgrade.Models;
+using ProjectUpgrade.Upgrade.Interfaces;
 
-namespace ProjectUpgrade.Extensions
+namespace ProjectUpgrade.Upgrade.Extensions
 {
     public static class ProjectBuilderExtensions
     {

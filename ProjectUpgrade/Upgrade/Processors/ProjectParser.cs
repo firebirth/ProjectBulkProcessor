@@ -5,10 +5,10 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Xml.Linq;
-using ProjectUpgrade.Interfaces;
 using ProjectUpgrade.Models;
+using ProjectUpgrade.Upgrade.Interfaces;
 
-namespace ProjectUpgrade.Processors
+namespace ProjectUpgrade.Upgrade.Processors
 {
     public class ProjectParser : IProjectParser
     {
@@ -30,7 +30,7 @@ namespace ProjectUpgrade.Processors
                                   .Any(x => string.Equals(x.Value, "Exe", StringComparison.OrdinalIgnoreCase));
 
             var packagesInfo = ParseDependencies(projectFile).ToImmutableList();
-
+            // TODO: add parsing of fields in AssemblyInfo.cs
             return new ProjectModel(projectFile, projectReferences, packagesInfo, isExecutable);
         }
 

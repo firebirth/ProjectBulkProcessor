@@ -4,27 +4,27 @@ using System.IO.Abstractions;
 using System.Linq;
 using Moq;
 using ProjectUpgrade.Configration;
-using ProjectUpgrade.Interfaces;
 using ProjectUpgrade.Models;
-using ProjectUpgrade.Processors;
+using ProjectUpgrade.Upgrade;
+using ProjectUpgrade.Upgrade.Interfaces;
 using Xunit;
 
 namespace ProjectUpgrade.Tests
 {
-    public class UpgradeProcessorTests
+    public class UpgradeOrchestratorTests
     {
-        private readonly UpgradeProcessor _sut;
+        private readonly UpgradeOrchestrator _sut;
         private readonly Mock<IProjectScanner> _scannerMock;
         private readonly Mock<IProjectCleaner> _cleanerMock;
 
-        public UpgradeProcessorTests()
+        public UpgradeOrchestratorTests()
         {
             _scannerMock = new Mock<IProjectScanner>();
             _cleanerMock = new Mock<IProjectCleaner>();
 
             _scannerMock.Setup(s => s.ScanForProjects(It.IsAny<string>())).Returns(Enumerable.Empty<ProjectModel>());
 
-            _sut = new UpgradeProcessor(_scannerMock.Object, _cleanerMock.Object);
+            _sut = new UpgradeOrchestrator(_scannerMock.Object, _cleanerMock.Object);
         }
 
         [Theory]

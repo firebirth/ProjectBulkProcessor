@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.2" />
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="System.IO.Abstractions" Version="2.1.0.178" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />

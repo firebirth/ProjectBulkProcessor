@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using ProjectUpgrade.Interfaces;
-using ProjectUpgrade.Processors;
 using ProjectUpgrade.Tests.Assertions;
+using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Processors;
 using Xunit;
 
 namespace ProjectUpgrade.Tests

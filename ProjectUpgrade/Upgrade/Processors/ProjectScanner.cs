@@ -2,10 +2,10 @@
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using ProjectUpgrade.Interfaces;
 using ProjectUpgrade.Models;
+using ProjectUpgrade.Upgrade.Interfaces;
 
-namespace ProjectUpgrade.Processors
+namespace ProjectUpgrade.Upgrade.Processors
 {
     public class ProjectScanner : IProjectScanner
     {

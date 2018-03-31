@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ProjectUpgrade.Models;
 
-namespace ProjectUpgrade.Interfaces
+namespace ProjectUpgrade.Upgrade.Interfaces
 {
     public interface IProjectScanner
     {
