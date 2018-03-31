@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using ProjectUpgrade.Interfaces;
 using ProjectUpgrade.Processors;
 using ProjectUpgrade.Tests.Assertions;
 using Xunit;
@@ -8,11 +9,11 @@ namespace ProjectUpgrade.Tests
 {
     public class ProjectBuilderTests
     {
-        private readonly ProjectBuilder _sut;
+        private readonly IProjectBuilder _sut;
 
         public ProjectBuilderTests()
         {
-            _sut = new ProjectBuilder();
+            _sut = ProjectBuilder.CreateProject();
         }
 
         [Fact]

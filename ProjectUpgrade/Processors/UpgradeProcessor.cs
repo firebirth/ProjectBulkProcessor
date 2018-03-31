@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.IO.Abstractions;
+﻿using System.Collections.Immutable;
+using System.Linq;
 using ProjectUpgrade.Configration;
 using ProjectUpgrade.Extensions;
 using ProjectUpgrade.Interfaces;
@@ -8,58 +8,36 @@ namespace ProjectUpgrade.Processors
 {
     public class UpgradeProcessor
     {
-        private readonly IFileSystem _fileSystem;
         private readonly IProjectScanner _projectScanner;
+        private readonly IProjectCleaner _projectCleaner;
 
-        public UpgradeProcessor(IFileSystem fileSystem, IProjectScanner projectScanner)
+        public UpgradeProcessor(IProjectScanner projectScanner, IProjectCleaner projectCleaner)
         {
-            _fileSystem = fileSystem;
             _projectScanner = projectScanner;
+            _projectCleaner = projectCleaner;
         }
 
-        public int ProcessProjects(UpgradeParameters parameters)
+        public void ProcessProjects(UpgradeParameters parameters)
         {
-            var models = _projectScanner.ScanForProjects(parameters.RootDirectory);
+            var models = _projectScanner.ScanForProjects(parameters.RootDirectory).ToImmutableList();
 
             foreach (var projectModel in models)
             {
-                var projectBuilder = new ProjectBuilder().AddProjectReferences(projectModel.ProjectReferences)
-                                                         .AddPackageDependencies(projectModel.PackageDependencies)
-                                                         .SetProjectType(projectModel.IsExecutable);
+                var project = ProjectBuilder.CreateProject()
+                                            .SetProjectType(projectModel.IsExecutable)
+                                            .AddProjectReferences(projectModel.ProjectReferences)
+                                            .AddPackageDependencies(projectModel.PackageDependencies)
+                                            .Build();
 
                 using (var fs = projectModel.ProjectFile.OpenWrite())
                 {
-                    projectBuilder.Build().Save(fs);
+                    project.Save(fs);
                 }
             }
 
-            DeleteDeprecatedFiles(parameters.RootDirectory);
-
-            return 1;
-        }
-
-        private void DeleteDeprecatedFiles(string rootFolder)
-        {
-            var rootDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(rootFolder);
-            var assemblyInfoFiles = rootDirectory.GetFiles("AssemblyInfo.cs", SearchOption.AllDirectories);
-            var packageFiles = rootDirectory.GetFiles("packages.config", SearchOption.AllDirectories);
-
-            foreach (var assemblyInfoFile in assemblyInfoFiles)
+            if (models.Any())
             {
-                var deleteFolder = assemblyInfoFile.Directory.GetFiles().Length == 1;
-                if (deleteFolder)
-                {
-                    assemblyInfoFile.Directory.Delete(true);
-                }
-                else
-                {
-                    assemblyInfoFile.Delete();
-                }
-            }
-
-            foreach (var packageFile in packageFiles)
-            {
-                packageFile.Delete();
+                _projectCleaner.DeleteDeprecatedFiles(parameters.RootDirectory);
             }
         }
     }

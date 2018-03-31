@@ -31,7 +31,7 @@ namespace ProjectUpgrade.Processors
 
             var packagesInfo = ParseDependencies(projectFile).ToImmutableList();
 
-            return new ProjectModel(projectReferences, packagesInfo, isExecutable, projectFile);
+            return new ProjectModel(projectFile, projectReferences, packagesInfo, isExecutable);
         }
 
         private static IEnumerable<PackageDependencyModel> ParseDependencies(FileInfoBase projectFile)

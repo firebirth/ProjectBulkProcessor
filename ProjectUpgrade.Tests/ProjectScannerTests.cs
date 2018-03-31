@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-using System.Runtime.InteropServices;
 using FluentAssertions;
 using Moq;
 using ProjectUpgrade.Interfaces;
@@ -20,12 +19,9 @@ namespace ProjectUpgrade.Tests
         private const int FileCount = 10;
         private readonly IProjectScanner _sut;
         private readonly Mock<IProjectParser> _projectParserMock;
-        private static readonly bool RunningOnWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         public ProjectScannerTests()
         {
-            Skip.IfNot(RunningOnWindows);
-
             _projectParserMock = new Mock<IProjectParser>();
 
             var fileSystemMock = new MockFileSystem();
@@ -42,7 +38,7 @@ namespace ProjectUpgrade.Tests
             _sut = new ProjectScanner(_projectParserMock.Object, fileSystemMock);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ShouldThrowIfDirectoryWasNotFound()
         {
             Func<IEnumerable> sutAction = () => _sut.ScanForProjects(NonExistingDirectory);
@@ -52,7 +48,7 @@ namespace ProjectUpgrade.Tests
                      .WithMessage($"Directory {NonExistingDirectory} doesn't exist.");
         }
 
-        [SkippableFact]
+        [Fact]
         public void ShouldNotThrowIfProjectFilesWereNotFoundAndReturnEmptyEnumerable()
         {
             var result = _sut.ScanForProjects(ExistingEmptyDirectory);
@@ -60,7 +56,7 @@ namespace ProjectUpgrade.Tests
             result.Should().BeEmpty();
         }
 
-        [SkippableFact]
+        [Fact]
         public void ShouldCallProjectParserForEachFoundFile()
         {
             var result = _sut.ScanForProjects(ExistingDirectory);

@@ -10,10 +10,11 @@ namespace ProjectUpgrade.Models
         public IImmutableList<PackageDependencyModel> PackageDependencies { get; }
         public bool IsExecutable { get; }
 
-        public ProjectModel(IImmutableList<ProjectReferenceModel> projectReferences,
-                            IImmutableList<PackageDependencyModel> packageDependencies,
-                            bool isExecutable,
-                            FileInfoBase projectFile)
+        public ProjectModel(
+            FileInfoBase projectFile,
+            IImmutableList<ProjectReferenceModel> projectReferences,
+            IImmutableList<PackageDependencyModel> packageDependencies,
+            bool isExecutable)
         {
             ProjectFile = projectFile;
             ProjectReferences = projectReferences;

@@ -3,20 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Copyright></Copyright>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageProjectUrl></PackageProjectUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl></RepositoryUrl>
-    <RepositoryType></RepositoryType>
-    <PackageTags></PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageId>ProjectUpgrade</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>ProjectUpgrade</Authors>
-    <Company>ProjectUpgrade</Company>
-    <Product>ProjectUpgrade</Product>
-    <Description>Package Description</Description>
   </PropertyGroup>
 
   <ItemGroup>

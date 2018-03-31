@@ -11,16 +11,23 @@ namespace ProjectUpgrade.Processors
         private XmlElement _currentGroup;
         private XmlElement _currentElement;
 
-        public ProjectBuilder()
+        public static IProjectBuilder CreateProject(XmlDocument document = null)
         {
-            _projectDocument = new XmlDocument();
+            var projectDocument = document ?? new XmlDocument();
+
+            return new ProjectBuilder(projectDocument);
+        }
+
+        private ProjectBuilder(XmlDocument projectDocument)
+        {
+            _projectDocument = projectDocument;
             _root = GetRootElement(_projectDocument);
             _projectDocument.AppendChild(_root);
         }
 
-        public IProjectGroupBuilder AddItemGroup() => AddGroupInternal("ItemGroup");
+        IProjectGroupBuilder IProjectBuilder.AddItemGroup() => AddGroupInternal("ItemGroup");
 
-        public IProjectGroupBuilder AddPropertyGroup() => AddGroupInternal("PropertyGroup");
+        IProjectGroupBuilder IProjectBuilder.AddPropertyGroup() => AddGroupInternal("PropertyGroup");
 
         IProjectElementBuilder IProjectGroupBuilder.WithElement(string elementName)
         {
@@ -45,7 +52,7 @@ namespace ProjectUpgrade.Processors
             return this;
         }
 
-        public XDocument Build()
+        XDocument IProjectBuilder.Build()
         {
             AttachHangingElements();
 

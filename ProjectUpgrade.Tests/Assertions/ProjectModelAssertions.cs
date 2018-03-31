@@ -19,18 +19,18 @@ namespace ProjectUpgrade.Tests.Assertions
         public bool HasProjectReference { get; private set; }
         public bool HasPackageDependency { get; private set; }
 
-        public ThenConstraint<ProjectModelAssertions> WhenShouldHaveProjectReference(bool hasProjectReference = true)
+        public AndThenConstraint<ProjectModelAssertions> WhenShouldHaveProjectReference(bool hasProjectReference = true)
         {
             HasProjectReference = hasProjectReference;
 
-            return new ThenConstraint<ProjectModelAssertions>(this);
+            return new AndThenConstraint<ProjectModelAssertions>(this);
         }
 
-        public ThenConstraint<ProjectModelAssertions> WhenShouldHavePackageDependency(bool hasPackageDependency = true)
+        public AndThenConstraint<ProjectModelAssertions> WhenShouldHavePackageDependency(bool hasPackageDependency = true)
         {
             HasPackageDependency = hasPackageDependency;
 
-            return new ThenConstraint<ProjectModelAssertions>(this);
+            return new AndThenConstraint<ProjectModelAssertions>(this);
         }
 
         public AndConstraint<ProjectModelAssertions> BeExecutable(bool expectedIsExecutable = true, string because = "", params object[] becauseArgs)
