@@ -1,6 +1,0 @@
-language: csharp
-solution: ProjectUpgrade.sln
-mono: none
-dotnet: 2.1.4
-script:
- - dotnet test ProjectUpgrade.Tests -c Release
