@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-using ProjectUpgrade.Models;
+using System.Linq;
+using ProjectUpgrade.Extensions;
 using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Upgrade.Extensions
 {
@@ -33,14 +35,18 @@ namespace ProjectUpgrade.Upgrade.Extensions
             return builder;
         }
 
-        public static IProjectBuilder SetProjectType(this IProjectBuilder builder,
-                                                     bool isExecutable)
+        public static IProjectBuilder SetProjectOptions(this IProjectBuilder builder,
+                                                        OptionsModel options)
         {
-            if (isExecutable)
+            var pairs = options.ToNameValuePair().ToList();
+            if (pairs.Any())
             {
-                builder.AddPropertyGroup()
-                       .WithElement("OutputType")
-                       .WithNodeValue("Exe");
+                var groupBuilder = builder.AddPropertyGroup();
+                foreach (var (name, value) in pairs)
+                {
+                    groupBuilder.WithElement(name)
+                                .WithNodeValue(value);
+                }
             }
 
             return builder;

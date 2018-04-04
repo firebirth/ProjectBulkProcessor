@@ -4,9 +4,9 @@ using System.IO.Abstractions;
 using System.Linq;
 using Moq;
 using ProjectUpgrade.Configration;
-using ProjectUpgrade.Models;
 using ProjectUpgrade.Upgrade;
 using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Models;
 using Xunit;
 
 namespace ProjectUpgrade.Tests
@@ -48,8 +48,8 @@ namespace ProjectUpgrade.Tests
             projectFileMock.Setup(p => p.OpenWrite()).Returns(Stream.Null);
             var projectModel = new ProjectModel(projectFileMock.Object, 
                                                 Enumerable.Empty<ProjectReferenceModel>().ToImmutableList(),
-                                                Enumerable.Empty<PackageDependencyModel>().ToImmutableList(), 
-                                                false);
+                                                Enumerable.Empty<PackageDependencyModel>().ToImmutableList(),
+                                                null);
             _scannerMock.Setup(s => s.ScanForProjects(rootPath)).Returns(new[] {projectModel});
 
             var upgradeParameters = new UpgradeParameters(rootPath);

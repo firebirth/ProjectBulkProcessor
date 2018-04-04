@@ -25,7 +25,7 @@ namespace ProjectUpgrade.Upgrade
             foreach (var projectModel in models)
             {
                 var project = ProjectBuilder.CreateProject()
-                                            .SetProjectType(projectModel.IsExecutable)
+                                            .SetProjectOptions(projectModel.Options)
                                             .AddProjectReferences(projectModel.ProjectReferences)
                                             .AddPackageDependencies(projectModel.PackageDependencies)
                                             .Build();

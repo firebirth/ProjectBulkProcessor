@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectUpgrade.Models
+namespace ProjectUpgrade.Upgrade.Models
 {
     public class PackageDependencyModel : IEquatable<PackageDependencyModel>
     {

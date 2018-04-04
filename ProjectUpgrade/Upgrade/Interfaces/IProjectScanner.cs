@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ProjectUpgrade.Models;
+using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Upgrade.Interfaces
 {

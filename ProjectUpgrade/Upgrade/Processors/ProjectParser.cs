@@ -5,13 +5,20 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Xml.Linq;
-using ProjectUpgrade.Models;
 using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Upgrade.Processors
 {
     public class ProjectParser : IProjectParser
     {
+        private readonly IOptionsParser _optionsParser;
+
+        public ProjectParser(IOptionsParser optionsParser)
+        {
+            _optionsParser = optionsParser;
+        }
+
         public ProjectModel ParseProject(FileInfoBase projectFile)
         {
             XDocument doc;
@@ -26,12 +33,13 @@ namespace ProjectUpgrade.Upgrade.Processors
                                        .Select(s => new ProjectReferenceModel(s))
                                        .ToImmutableList();
 
-            var isExecutable = doc.Descendants("OutputType")
-                                  .Any(x => string.Equals(x.Value, "Exe", StringComparison.OrdinalIgnoreCase));
+            var options = _optionsParser.ParseProjectOptions(projectFile);
+            options.TargetFramework = doc.Descendants("TargetFrameworkVersion")
+                                         .Single().Value;
 
             var packagesInfo = ParseDependencies(projectFile).ToImmutableList();
-            // TODO: add parsing of fields in AssemblyInfo.cs
-            return new ProjectModel(projectFile, projectReferences, packagesInfo, isExecutable);
+
+            return new ProjectModel(projectFile, projectReferences, packagesInfo, options);
         }
 
         private static IEnumerable<PackageDependencyModel> ParseDependencies(FileInfoBase projectFile)

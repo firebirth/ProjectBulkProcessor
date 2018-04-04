@@ -3,8 +3,8 @@ using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Upgrade.Interfaces
 {
-    public interface IProjectParser
+    public interface IOptionsParser
     {
-        ProjectModel ParseProject(FileInfoBase projectFile);
+        OptionsModel ParseProjectOptions(FileInfoBase projectFile);
     }
 }

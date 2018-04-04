@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
-using ProjectUpgrade.Models;
+using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Tests.Assertions
 {
@@ -37,7 +37,8 @@ namespace ProjectUpgrade.Tests.Assertions
         {
             Execute.Assertion
                    .BecauseOf(because, becauseArgs)
-                   .Given(() => Subject.IsExecutable)
+                   .Given(() => true)
+                   //.Given(() => Subject.IsExecutable)
                    .ForCondition(actualIsExecutable => actualIsExecutable == expectedIsExecutable)
                    .FailWith($"Expected project to be {(expectedIsExecutable ? "executable" : "library")}, but it wasn't");
 

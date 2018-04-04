@@ -73,6 +73,7 @@ namespace ProjectUpgrade.Upgrade.Processors
 
         private void AttachHangingElements()
         {
+            // TODO: check if this doesn't add duplicates
             if (_currentElement != null)
             {
                 _currentGroup.AppendChild(_currentElement);

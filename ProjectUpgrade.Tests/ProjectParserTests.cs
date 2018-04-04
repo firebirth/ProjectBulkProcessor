@@ -25,7 +25,7 @@ namespace ProjectUpgrade.Tests
 
         public ProjectParserTests()
         {
-            _sut = new ProjectParser();
+            _sut = new ProjectParser(null);
             _fileSystem = SetFileSystem();
         }
 

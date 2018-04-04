@@ -2,8 +2,8 @@
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using ProjectUpgrade.Models;
 using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Models;
 
 namespace ProjectUpgrade.Upgrade.Processors
 {
