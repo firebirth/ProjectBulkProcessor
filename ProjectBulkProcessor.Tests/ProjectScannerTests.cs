@@ -5,11 +5,11 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
 using Moq;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Processors;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Processors;
 using Xunit;
 
-namespace ProjectUpgrade.Tests
+namespace ProjectBulkProcessor.Tests
 {
     public class ProjectScannerTests
     {

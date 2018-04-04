@@ -1,9 +1,9 @@
 ﻿using System.IO.Abstractions;
 using Autofac;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Processors;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Processors;
 
-namespace ProjectUpgrade.Upgrade
+namespace ProjectBulkProcessor.Upgrade
 {
     public class UpgradeModule : Module
     {

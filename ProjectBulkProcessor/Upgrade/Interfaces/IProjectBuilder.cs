@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace ProjectUpgrade.Upgrade.Interfaces
+namespace ProjectBulkProcessor.Upgrade.Interfaces
 {
     public interface IProjectBuilder
     {

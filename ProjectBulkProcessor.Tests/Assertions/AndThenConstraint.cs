@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-namespace ProjectUpgrade.Tests.Assertions
+namespace ProjectBulkProcessor.Tests.Assertions
 {
     public class AndThenConstraint<T> : AndConstraint<T>
     {

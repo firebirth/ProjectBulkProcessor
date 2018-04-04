@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Models;
 
-namespace ProjectUpgrade.Upgrade.Processors
+namespace ProjectBulkProcessor.Upgrade.Processors
 {
     public class OptionsParser : IOptionsParser
     {

@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ProjectUpgrade.Configration
+namespace ProjectBulkProcessor.Configration
 {
     [Verb("upgrade", HelpText = "Upgrades project to use VS2017 structure")]
     public class UpgradeParameters

@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using ProjectUpgrade.Tests.Assertions;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Processors;
+using ProjectBulkProcessor.Tests.Assertions;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Processors;
 using Xunit;
 
-namespace ProjectUpgrade.Tests
+namespace ProjectBulkProcessor.Tests
 {
     public class ProjectBuilderTests
     {

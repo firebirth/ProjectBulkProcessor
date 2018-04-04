@@ -1,8 +1,8 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
-using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Interfaces;
 
-namespace ProjectUpgrade.Upgrade.Processors
+namespace ProjectBulkProcessor.Upgrade.Processors
 {
     public class ProjectBuilder : IProjectElementBuilder, IProjectGroupBuilder
     {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
-using ProjectUpgrade.Configration;
-using ProjectUpgrade.Upgrade.Extensions;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Processors;
+using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Upgrade.Extensions;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Processors;
 
-namespace ProjectUpgrade.Upgrade
+namespace ProjectBulkProcessor.Upgrade
 {
     public class UpgradeOrchestrator
     {

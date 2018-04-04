@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Upgrade.Models;
 
-namespace ProjectUpgrade.Upgrade.Interfaces
+namespace ProjectBulkProcessor.Upgrade.Interfaces
 {
     public interface IProjectScanner
     {

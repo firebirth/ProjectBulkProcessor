@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ProjectUpgrade.Extensions;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Extensions;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Models;
 
-namespace ProjectUpgrade.Upgrade.Extensions
+namespace ProjectBulkProcessor.Upgrade.Extensions
 {
     public static class ProjectBuilderExtensions
     {

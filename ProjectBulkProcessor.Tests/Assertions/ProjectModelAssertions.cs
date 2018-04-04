@@ -3,9 +3,9 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Upgrade.Models;
 
-namespace ProjectUpgrade.Tests.Assertions
+namespace ProjectBulkProcessor.Tests.Assertions
 {
     public class ProjectModelAssertions : ReferenceTypeAssertions<ProjectModel, ProjectModelAssertions>
     {

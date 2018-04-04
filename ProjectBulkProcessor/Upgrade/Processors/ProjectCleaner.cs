@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.IO.Abstractions;
-using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Interfaces;
 
-namespace ProjectUpgrade.Upgrade.Processors
+namespace ProjectBulkProcessor.Upgrade.Processors
 {
     public class ProjectCleaner : IProjectCleaner
     {

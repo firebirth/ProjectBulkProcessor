@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace ProjectUpgrade.Extensions
+namespace ProjectBulkProcessor.Extensions
 {
     public static class ObjectExtensions
     {

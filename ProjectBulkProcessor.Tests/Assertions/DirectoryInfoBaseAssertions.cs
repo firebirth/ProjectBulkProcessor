@@ -5,7 +5,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 
-namespace ProjectUpgrade.Tests.Assertions
+namespace ProjectBulkProcessor.Tests.Assertions
 {
     public class DirectoryInfoBaseAssertions : ReferenceTypeAssertions<DirectoryInfoBase, DirectoryInfoBaseAssertions>
     {

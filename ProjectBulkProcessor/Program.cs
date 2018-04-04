@@ -1,11 +1,11 @@
 ﻿using System;
 using Autofac;
 using CommandLine;
-using ProjectUpgrade.Configration;
-using ProjectUpgrade.Extensions;
-using ProjectUpgrade.Upgrade;
+using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Extensions;
+using ProjectBulkProcessor.Upgrade;
 
-namespace ProjectUpgrade
+namespace ProjectBulkProcessor
 {
     public class Program
     {

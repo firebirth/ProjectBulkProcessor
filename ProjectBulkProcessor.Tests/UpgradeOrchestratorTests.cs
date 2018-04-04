@@ -3,13 +3,13 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using Moq;
-using ProjectUpgrade.Configration;
-using ProjectUpgrade.Upgrade;
-using ProjectUpgrade.Upgrade.Interfaces;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Upgrade;
+using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Models;
 using Xunit;
 
-namespace ProjectUpgrade.Tests
+namespace ProjectBulkProcessor.Tests
 {
     public class UpgradeOrchestratorTests
     {

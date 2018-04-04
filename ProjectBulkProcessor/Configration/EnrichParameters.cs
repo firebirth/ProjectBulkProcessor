@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ProjectUpgrade.Configration
+namespace ProjectBulkProcessor.Configration
 {
     [Verb("enrich", HelpText = "Enriches VS2017 projects with given info")]
     public class EnrichParameters

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.IO.Abstractions;
 
-namespace ProjectUpgrade.Upgrade.Models
+namespace ProjectBulkProcessor.Upgrade.Models
 {
     public class ProjectModel
     {

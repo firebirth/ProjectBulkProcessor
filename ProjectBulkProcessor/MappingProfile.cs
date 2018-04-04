@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using ProjectUpgrade.Configration;
-using ProjectUpgrade.Upgrade.Models;
+using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Upgrade.Models;
 
-namespace ProjectUpgrade
+namespace ProjectBulkProcessor
 {
     public class MappingProfile : Profile
     {

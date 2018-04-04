@@ -4,7 +4,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Core;
 
-namespace ProjectUpgrade.Extensions
+namespace ProjectBulkProcessor.Extensions
 {
     public static class AutofacExtensions
     {

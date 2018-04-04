@@ -4,7 +4,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Xml;
 
-namespace ProjectUpgrade.Tests.Assertions
+namespace ProjectBulkProcessor.Tests.Assertions
 {
     public class XElementAttributesAssertions : XElementAssertions
     {
