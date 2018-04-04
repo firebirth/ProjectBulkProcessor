@@ -2,7 +2,10 @@
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using FluentAssertions;
+using Moq;
 using ProjectUpgrade.Tests.Assertions;
+using ProjectUpgrade.Upgrade.Interfaces;
+using ProjectUpgrade.Upgrade.Models;
 using ProjectUpgrade.Upgrade.Processors;
 using Xunit;
 
@@ -22,10 +25,13 @@ namespace ProjectUpgrade.Tests
         private const string PackageVersion = "testVersion";
         private readonly ProjectParser _sut;
         private readonly MockFileSystem _fileSystem;
+        private readonly Mock<IOptionsParser> _optionsParserMock;
 
         public ProjectParserTests()
         {
-            _sut = new ProjectParser(null);
+            _optionsParserMock = new Mock<IOptionsParser>();
+            _optionsParserMock.Setup(parser => parser.ParseProjectOptions(It.IsAny<FileInfoBase>())).Returns(new OptionsModel());
+            _sut = new ProjectParser(_optionsParserMock.Object);
             _fileSystem = SetFileSystem();
         }
 
@@ -55,6 +61,8 @@ namespace ProjectUpgrade.Tests
                   .And.HaveLocation(fileInfo.FullName)
                   .And.HaveProjectReference(ReferencedProjectPath)
                   .And.HavePackageDependency(PackageId, PackageVersion);
+
+            _optionsParserMock.Verify(parser => parser.ParseProjectOptions(fileInfo), Times.Once);
         }
 
         [Fact]
@@ -65,6 +73,8 @@ namespace ProjectUpgrade.Tests
             var result = _sut.ParseProject(fileInfo);
 
             result.ProjectReferences.Should().HaveCount(2);
+
+            _optionsParserMock.Verify(parser => parser.ParseProjectOptions(fileInfo), Times.Once);
         }
 
         private FileInfoBase GetFileInfo(string projectName, string directoryName)

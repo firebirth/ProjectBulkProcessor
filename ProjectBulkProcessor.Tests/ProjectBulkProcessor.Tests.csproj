@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectUpgrade\ProjectUpgrade.csproj" />
+    <ProjectReference Include="..\ProjectBulkProcessor\ProjectBulkProcessor.csproj" />
   </ItemGroup>
 
 </Project>
