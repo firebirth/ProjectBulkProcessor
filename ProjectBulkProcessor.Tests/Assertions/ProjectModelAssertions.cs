@@ -37,8 +37,7 @@ namespace ProjectBulkProcessor.Tests.Assertions
         {
             Execute.Assertion
                    .BecauseOf(because, becauseArgs)
-                   .Given(() => true)
-                   //.Given(() => Subject.IsExecutable)
+                   .Given(() => Subject.Options.IsExecutable)
                    .ForCondition(actualIsExecutable => actualIsExecutable == expectedIsExecutable)
                    .FailWith($"Expected project to be {(expectedIsExecutable ? "executable" : "library")}, but it wasn't");
 

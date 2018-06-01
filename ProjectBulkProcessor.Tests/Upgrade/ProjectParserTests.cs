@@ -9,7 +9,7 @@ using ProjectBulkProcessor.Upgrade.Models;
 using ProjectBulkProcessor.Upgrade.Processors;
 using Xunit;
 
-namespace ProjectBulkProcessor.Tests
+namespace ProjectBulkProcessor.Tests.Upgrade
 {
     public class ProjectParserTests
     {
@@ -36,19 +36,19 @@ namespace ProjectBulkProcessor.Tests
         }
 
         [Theory]
-        [InlineData(DirectoryWithPackages, ProjectWithReferenceAndExe, true, true, true)]
-        [InlineData(DirectoryWithPackages, ProjectWithReference, true, true, false)]
-        [InlineData(DirectoryWithPackages, ProjectWithExe, false, true, true)]
-        [InlineData(DirectoryWithPackages, EmptyProject, false, true, false)]
-        [InlineData(DirectoryWithoutPackages, ProjectWithReferenceAndExe, true, false, true)]
-        [InlineData(DirectoryWithoutPackages, ProjectWithReference, true, false, false)]
-        [InlineData(DirectoryWithoutPackages, ProjectWithExe, false, false, true)]
-        [InlineData(DirectoryWithoutPackages, EmptyProject, false, false, false)]
-        public void ShouldParseProjectWithPackageDependencyAndProjectReferenceAndOfExecutableType(string directoryName,
-                                                                                        string projectName,
-                                                                                        bool hasProjectReference,
-                                                                                        bool hasPackageDependency,
-                                                                                        bool expectedIsExecutable)
+        [InlineData(DirectoryWithPackages, ProjectWithReferenceAndExe, true, true)]
+        [InlineData(DirectoryWithPackages, ProjectWithReference, true, true)]
+        [InlineData(DirectoryWithPackages, ProjectWithExe, false, true)]
+        [InlineData(DirectoryWithPackages, EmptyProject, false, true)]
+        [InlineData(DirectoryWithoutPackages, ProjectWithReferenceAndExe, true, false)]
+        [InlineData(DirectoryWithoutPackages, ProjectWithReference, true, false)]
+        [InlineData(DirectoryWithoutPackages, ProjectWithExe, false, false)]
+        [InlineData(DirectoryWithoutPackages, EmptyProject, false, false)]
+        public void ShouldParseProjectWithPackageDependencyAndProjectReferenceAndOfExecutableType(
+            string directoryName,
+            string projectName,
+            bool hasProjectReference,
+            bool hasPackageDependency)
         {
             var fileInfo = GetFileInfo(projectName, directoryName);
 
@@ -57,8 +57,7 @@ namespace ProjectBulkProcessor.Tests
             result.Should()
                   .WhenShouldHavePackageDependency(hasPackageDependency)
                   .And.WhenShouldHaveProjectReference(hasProjectReference)
-                  .Then.BeExecutable(expectedIsExecutable)
-                  .And.HaveLocation(fileInfo.FullName)
+                  .Then.HaveLocation(fileInfo.FullName)
                   .And.HaveProjectReference(ReferencedProjectPath)
                   .And.HavePackageDependency(PackageId, PackageVersion);
 

@@ -23,9 +23,11 @@ namespace ProjectBulkProcessor.Upgrade.Processors
         {
             AssemblyInfoAttributePropertyNameMap = new Dictionary<string, string>
             {
-                // TODO: add all attributes and properties
+                {nameof(AssemblyCompanyAttribute), nameof(OptionsModel.Company)},
+                {nameof(AssemblyCopyrightAttribute), nameof(OptionsModel.Copyright)},
                 {nameof(AssemblyDescriptionAttribute), nameof(OptionsModel.Description)},
-                {nameof(AssemblyCompanyAttribute), nameof(OptionsModel.Company)}
+                {nameof(AssemblyProductAttribute), nameof(OptionsModel.Product)},
+                {nameof(AssemblyVersionAttribute), nameof(OptionsModel.Version)}
             }.ToImmutableDictionary();
 
             PropertyNameAssemblyInfoAttributeMap =

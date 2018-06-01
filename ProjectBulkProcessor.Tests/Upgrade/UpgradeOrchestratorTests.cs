@@ -9,7 +9,7 @@ using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Models;
 using Xunit;
 
-namespace ProjectBulkProcessor.Tests
+namespace ProjectBulkProcessor.Tests.Upgrade
 {
     public class UpgradeOrchestratorTests
     {
@@ -49,7 +49,7 @@ namespace ProjectBulkProcessor.Tests
             var projectModel = new ProjectModel(projectFileMock.Object, 
                                                 Enumerable.Empty<ProjectReferenceModel>().ToImmutableList(),
                                                 Enumerable.Empty<PackageDependencyModel>().ToImmutableList(),
-                                                null);
+                                                new OptionsModel());
             _scannerMock.Setup(s => s.ScanForProjects(rootPath)).Returns(new[] {projectModel});
 
             var upgradeParameters = new UpgradeParameters(rootPath);

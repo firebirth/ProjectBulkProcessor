@@ -33,8 +33,6 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                                        .ToImmutableList();
 
             var options = _optionsParser.ParseProjectOptions(projectFile);
-            options.TargetFramework = doc.Descendants("TargetFrameworkVersion")
-                                         .Single().Value;
 
             var packagesInfo = ParseDependencies(projectFile).ToImmutableList();
 
