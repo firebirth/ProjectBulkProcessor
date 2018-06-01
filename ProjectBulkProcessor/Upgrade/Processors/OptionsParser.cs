@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,6 +15,25 @@ namespace ProjectBulkProcessor.Upgrade.Processors
 {
     public class OptionsParser : IOptionsParser
     {
+        private static readonly PropertyInfo[] OptionsModelProperties;
+        public static readonly ImmutableDictionary<string, string> PropertyNameAssemblyInfoAttributeMap;
+        public static readonly ImmutableDictionary<string, string> AssemblyInfoAttributePropertyNameMap;
+
+        static OptionsParser()
+        {
+            AssemblyInfoAttributePropertyNameMap = new Dictionary<string, string>
+            {
+                // TODO: add all attributes and properties
+                {nameof(AssemblyDescriptionAttribute), nameof(OptionsModel.Description)},
+                {nameof(AssemblyCompanyAttribute), nameof(OptionsModel.Company)}
+            }.ToImmutableDictionary();
+
+            PropertyNameAssemblyInfoAttributeMap =
+                AssemblyInfoAttributePropertyNameMap.ToImmutableDictionary(kvp => kvp.Value, kvp => kvp.Key);
+
+            OptionsModelProperties = typeof(OptionsModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        }
+
         public OptionsModel ParseProjectOptions(FileInfoBase projectFile)
         {
             var options = new OptionsModel();
@@ -24,7 +46,12 @@ namespace ProjectBulkProcessor.Upgrade.Processors
 
         private void SetAssemblyInfoOptions(DirectoryInfoBase projectDirectory, OptionsModel options)
         {
-            var assemblyInfoFile = projectDirectory.GetFiles("AssemblyInfo.cs", SearchOption.AllDirectories).Single();
+            var assemblyInfoFile = projectDirectory.GetFiles("AssemblyInfo.cs", SearchOption.AllDirectories).SingleOrDefault();
+            if (assemblyInfoFile == null)
+            {
+                return;
+            }
+
             SyntaxTree tree;
             using (var fs = assemblyInfoFile.OpenText())
             {
@@ -33,8 +60,24 @@ namespace ProjectBulkProcessor.Upgrade.Processors
             }
 
             var root = (CompilationUnitSyntax)tree.GetRoot();
-            var attributes = root.AttributeLists.GetEnumerator();
+            var attributeLists = root.AttributeLists;
 
+            foreach (var attributeList in attributeLists)
+            {
+                foreach (var attributeName in AssemblyInfoAttributePropertyNameMap.Keys)
+                {
+                    var attribute = attributeList.Attributes.FirstOrDefault(a => (a.Name as IdentifierNameSyntax)?.Identifier.Text == attributeName);
+                    if (attribute == null)
+                    {
+                        continue;
+                    }
+
+                    var property = OptionsModelProperties.Single(p => p.Name == AssemblyInfoAttributePropertyNameMap[attributeName]);
+                    var attributeArguments = attribute.ArgumentList.Arguments.Select(a => a.ToFullString().Trim('"'));
+
+                    property.SetValue(options, string.Join(",", attributeArguments));
+                }
+            }
         }
 
         private void SetProjectOptions(FileInfoBase fileInfo, OptionsModel options)
