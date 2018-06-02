@@ -1,2 +1,2 @@
-# VS2017ProjectUpgrade
-Upgrades old csproj files to VS 2017 format
+# Bulk processing of Visual Studio project files
+For now only able to convert old project format to new one.
