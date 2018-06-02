@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -66,15 +69,20 @@ namespace ProjectBulkProcessor.Upgrade.Processors
 
             foreach (var attributeList in attributeLists)
             {
-                foreach (var attributeName in AssemblyInfoAttributePropertyNameMap.Keys)
+                foreach (var optionAttributeName in AssemblyInfoAttributePropertyNameMap.Keys)
                 {
-                    var attribute = attributeList.Attributes.FirstOrDefault(a => (a.Name as IdentifierNameSyntax)?.Identifier.Text == attributeName);
+                    var shortAttributeName = optionAttributeName.Replace(nameof(Attribute), string.Empty);
+                    var attribute = attributeList.Attributes.FirstOrDefault(a =>
+                    {
+                        var attributeName = (a.Name as IdentifierNameSyntax)?.Identifier.Text;
+                        return string.Equals(optionAttributeName, attributeName, StringComparison.Ordinal) || string.Equals(attributeName, shortAttributeName, StringComparison.Ordinal);
+                    });
                     if (attribute == null)
                     {
                         continue;
                     }
 
-                    var property = OptionsModelProperties.Single(p => p.Name == AssemblyInfoAttributePropertyNameMap[attributeName]);
+                    var property = OptionsModelProperties.Single(p => p.Name == AssemblyInfoAttributePropertyNameMap[optionAttributeName]);
                     var attributeArguments = attribute.ArgumentList.Arguments.Select(a => a.ToFullString().Trim('"'));
 
                     property.SetValue(options, string.Join(",", attributeArguments));
@@ -90,10 +98,11 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                 doc = XDocument.Load(fs);
             }
 
-            options.TargetFramework = doc.Descendants("TargetFrameworkVersion")
-                                         .Single().Value;
-            options.IsExecutable = doc.Descendants("OutputType")
-                                      .Any(x => x.Value == "Exe");
+            var namespaceManager = new XmlNamespaceManager(new NameTable());
+            namespaceManager.AddNamespace("project", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+            options.TargetFramework = doc.XPathSelectElement("//project:TargetFrameworkVersion", namespaceManager).Value;
+            options.IsExecutable = doc.XPathSelectElement("//project:OutputType", namespaceManager).Value.Contains("Exe");
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ProjectBulkProcessor.Tests.Upgrade
 
         public OptionsParserTests()
         {
-            _fileSystem.AddFile(ProjectFileName, new MockFileData("<root><TargetFrameworkVersion>testVersion</TargetFrameworkVersion><OutputType>Exe</OutputType></root>"));
+            _fileSystem.AddFile(ProjectFileName, new MockFileData("<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\"><TargetFrameworkVersion>testVersion</TargetFrameworkVersion><OutputType>Exe</OutputType></root>"));
         }
 
         [Theory]

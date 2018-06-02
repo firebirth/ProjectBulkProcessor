@@ -30,7 +30,7 @@ namespace ProjectBulkProcessor.Upgrade
                                             .AddPackageDependencies(projectModel.PackageDependencies)
                                             .Build();
 
-                using (var fs = projectModel.ProjectFile.OpenWrite())
+                using (var fs = projectModel.ProjectFile.CreateText())
                 {
                     project.Save(fs);
                 }
