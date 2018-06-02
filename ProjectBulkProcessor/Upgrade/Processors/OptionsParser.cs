@@ -5,12 +5,11 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ProjectBulkProcessor.Extensions;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Models;
 
@@ -19,6 +18,7 @@ namespace ProjectBulkProcessor.Upgrade.Processors
     public class OptionsParser : IOptionsParser
     {
         private static readonly PropertyInfo[] OptionsModelProperties;
+        public static readonly ImmutableDictionary<string, string> OldNewFrameworkAliasMap;
         public static readonly ImmutableDictionary<string, string> PropertyNameAssemblyInfoAttributeMap;
         public static readonly ImmutableDictionary<string, string> AssemblyInfoAttributePropertyNameMap;
 
@@ -26,15 +26,21 @@ namespace ProjectBulkProcessor.Upgrade.Processors
         {
             AssemblyInfoAttributePropertyNameMap = new Dictionary<string, string>
             {
-                {nameof(AssemblyCompanyAttribute), nameof(OptionsModel.Company)},
-                {nameof(AssemblyCopyrightAttribute), nameof(OptionsModel.Copyright)},
-                {nameof(AssemblyDescriptionAttribute), nameof(OptionsModel.Description)},
-                {nameof(AssemblyProductAttribute), nameof(OptionsModel.Product)},
-                {nameof(AssemblyVersionAttribute), nameof(OptionsModel.Version)}
+                [nameof(AssemblyCompanyAttribute)] = nameof(OptionsModel.Company),
+                [nameof(AssemblyCopyrightAttribute)] = nameof(OptionsModel.Copyright),
+                [nameof(AssemblyDescriptionAttribute)] = nameof(OptionsModel.Description),
+                [nameof(AssemblyProductAttribute)] = nameof(OptionsModel.Product),
+                [nameof(AssemblyVersionAttribute)] = nameof(OptionsModel.Version)
             }.ToImmutableDictionary();
 
             PropertyNameAssemblyInfoAttributeMap =
                 AssemblyInfoAttributePropertyNameMap.ToImmutableDictionary(kvp => kvp.Value, kvp => kvp.Key);
+
+            OldNewFrameworkAliasMap = new Dictionary<string, string>
+            {
+                // TODO: add other frameworks
+                ["v4.6.2"] = "net462",
+            }.ToImmutableDictionary();
 
             OptionsModelProperties = typeof(OptionsModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         }
@@ -98,11 +104,14 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                 doc = XDocument.Load(fs);
             }
 
-            var namespaceManager = new XmlNamespaceManager(new NameTable());
-            namespaceManager.AddNamespace("project", "http://schemas.microsoft.com/developer/msbuild/2003");
+            var oldFramework = doc.GetProjectElementByName("TargetFrameworkVersion").Value;
+            if (!OldNewFrameworkAliasMap.TryGetValue(oldFramework, out var newFramework))
+            {
+                throw new NotSupportedException($"Framework {oldFramework} is not supported.");
+            }
 
-            options.TargetFramework = doc.XPathSelectElement("//project:TargetFrameworkVersion", namespaceManager).Value;
-            options.IsExecutable = doc.XPathSelectElement("//project:OutputType", namespaceManager).Value.Contains("Exe");
+            options.TargetFramework = newFramework;
+            options.IsExecutable = doc.GetProjectElementByName("OutputType").Value.Contains("Exe");
         }
     }
 }

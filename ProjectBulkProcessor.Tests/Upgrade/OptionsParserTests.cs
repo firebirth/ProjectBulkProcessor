@@ -17,11 +17,11 @@ namespace ProjectBulkProcessor.Tests.Upgrade
 
         public OptionsParserTests()
         {
-            _fileSystem.AddFile(ProjectFileName, new MockFileData("<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\"><TargetFrameworkVersion>testVersion</TargetFrameworkVersion><OutputType>Exe</OutputType></root>"));
+            _fileSystem.AddFile(ProjectFileName, new MockFileData("<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\"><TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion><OutputType>Exe</OutputType></root>"));
         }
 
         [Theory]
-        [InlineData(nameof(OptionsModel.TargetFramework), "testVersion")]
+        [InlineData(nameof(OptionsModel.TargetFramework), "net462")]
         [InlineData(nameof(OptionsModel.IsExecutable), "True")]
         public void ShouldParseProjectOptions(string propertyName, string expectedValue)
         {

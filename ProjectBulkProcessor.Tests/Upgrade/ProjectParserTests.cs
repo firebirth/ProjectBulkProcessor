@@ -90,27 +90,27 @@ namespace ProjectBulkProcessor.Tests.Upgrade
             mockFileSystem.AddDirectory(DirectoryWithoutPackages);
 
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithReferenceAndExe + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(true, true)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(true, true)}</root>"));
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithReference + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(true, false)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(true, false)}</root>"));
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithExe + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(false, true)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(false, true)}</root>"));
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + EmptyProject + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(false, false)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(false, false)}</root>"));
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + "packages.config",
                                    new MockFileData("<root><package id=\"" + PackageId + "\" version=\"" + PackageVersion + "\" /></root>"));
 
             mockFileSystem.AddFile(DirectoryWithoutPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithReferenceAndExe + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(true, true)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(true, true)}</root>"));
             mockFileSystem.AddFile(DirectoryWithoutPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithReference + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(true, false)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(true, false)}</root>"));
             mockFileSystem.AddFile(DirectoryWithoutPackages + mockFileSystem.Path.DirectorySeparatorChar + ProjectWithExe + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(false, true)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(false, true)}</root>"));
             mockFileSystem.AddFile(DirectoryWithoutPackages + mockFileSystem.Path.DirectorySeparatorChar + EmptyProject + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(false, false)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(false, false)}</root>"));
 
             mockFileSystem.AddFile(DirectoryWithPackages + mockFileSystem.Path.DirectorySeparatorChar + MultipleReferenceProject + ".csproj",
-                                   new MockFileData($"<root>{GetTestProjectFileData(true, true)}{GetTestProjectFileData(true, false)}</root>"));
+                                   new MockFileData($"<root xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">{GetTestProjectFileData(true, true)}{GetTestProjectFileData(true, false)}</root>"));
 
             return mockFileSystem;
         }

@@ -45,7 +45,7 @@ namespace ProjectBulkProcessor.Tests.Upgrade
         {
             var rootPath = "Path/With/Projects";
             var projectFileMock = new Mock<FileInfoBase>();
-            projectFileMock.Setup(p => p.OpenWrite()).Returns(Stream.Null);
+            projectFileMock.Setup(p => p.CreateText()).Returns(StreamWriter.Null);
             var projectModel = new ProjectModel(projectFileMock.Object, 
                                                 Enumerable.Empty<ProjectReferenceModel>().ToImmutableList(),
                                                 Enumerable.Empty<PackageDependencyModel>().ToImmutableList(),
@@ -58,7 +58,7 @@ namespace ProjectBulkProcessor.Tests.Upgrade
 
             _scannerMock.Verify(s => s.ScanForProjects(rootPath), Times.Once);
             _cleanerMock.Verify(c => c.DeleteDeprecatedFiles(rootPath), Times.Once);
-            projectFileMock.Verify(f => f.OpenWrite(), Times.Once);
+            projectFileMock.Verify(f => f.CreateText(), Times.Once);
         }
     }
 }

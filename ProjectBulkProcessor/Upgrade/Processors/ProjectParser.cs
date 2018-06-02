@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml.XPath;
+using ProjectBulkProcessor.Extensions;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Models;
 
@@ -26,7 +28,7 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                 doc = XDocument.Load(fs);
             }
 
-            var projectReferences = doc.Descendants("ProjectReference")
+            var projectReferences = doc.GetProjectElementsByName("ProjectReference")
                                        .Select(e => e.Attribute("Include")?.Value)
                                        .Where(s => !string.IsNullOrEmpty(s))
                                        .Select(s => new ProjectReferenceModel(s))
@@ -55,7 +57,7 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                 doc = XDocument.Load(fs);
             }
 
-            return doc.Descendants("package")
+            return doc.XPathSelectElements("//package")
                       .Select(e => (Id: e.Attribute("id")?.Value, Version: e.Attribute("version")?.Value))
                       .Where(t => !string.IsNullOrEmpty(t.Id) && !string.IsNullOrEmpty(t.Version))
                       .Select(t => new PackageDependencyModel(t.Id, t.Version));
