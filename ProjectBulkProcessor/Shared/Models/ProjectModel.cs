@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO.Abstractions;
 
 namespace ProjectBulkProcessor.Shared.Models
@@ -18,5 +19,9 @@ namespace ProjectBulkProcessor.Shared.Models
             ProjectReferences = projectReferences;
             PackageDependencies = packageDependencies;
         }
+
+        public ProjectModel WithPackageDependencies(IEnumerable<PackageDependencyModel> packageDependencyModels) => new ProjectModel(ProjectFile, ProjectReferences, packageDependencyModels.ToImmutableList());
+
+        public ProjectModel WithProjectReferences(IEnumerable<ProjectReferenceModel> projectReferences) => new ProjectModel(ProjectFile, projectReferences.ToImmutableList(), PackageDependencies);
     }
 }

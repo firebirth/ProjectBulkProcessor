@@ -24,6 +24,7 @@ namespace ProjectBulkProcessor.Upgrade
         public void ProcessProjects(UpgradeParameters parameters)
         {
             var models = _projectScanner.ScanForProjects(parameters.RootDirectory).ToImmutableList();
+            models = _projectCleaner.CleanTransitiveReferences(models);
 
             foreach (var projectModel in models)
             {

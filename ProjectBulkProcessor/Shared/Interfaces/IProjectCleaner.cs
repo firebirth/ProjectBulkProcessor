@@ -7,6 +7,6 @@ namespace ProjectBulkProcessor.Shared.Interfaces
     {
         void DeleteDeprecatedFiles(string rootFolder);
 
-        IImmutableList<ProjectModel> CleanTransitiveReferences(IImmutableList<ProjectModel> projectModels);
+        ImmutableList<ProjectModel> CleanTransitiveReferences(ImmutableList<ProjectModel> projectModels);
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Xml;
+﻿using ProjectBulkProcessor.Upgrade.Interfaces;
+using System.Xml;
 using System.Xml.Linq;
-using ProjectBulkProcessor.Upgrade.Interfaces;
 
 namespace ProjectBulkProcessor.Upgrade.Processors
 {
@@ -11,12 +11,7 @@ namespace ProjectBulkProcessor.Upgrade.Processors
         private XmlElement _currentGroup;
         private XmlElement _currentElement;
 
-        public static IProjectBuilder CreateProject(XmlDocument document = null)
-        {
-            var projectDocument = document ?? new XmlDocument();
-
-            return new ProjectBuilder(projectDocument);
-        }
+        public static IProjectBuilder CreateProject() => new ProjectBuilder(new XmlDocument());
 
         private ProjectBuilder(XmlDocument projectDocument)
         {
@@ -55,6 +50,14 @@ namespace ProjectBulkProcessor.Upgrade.Processors
         XDocument IProjectBuilder.Build()
         {
             AttachHangingElements();
+
+            foreach (XmlElement node in _root.ChildNodes)
+            {
+                if (!node.HasChildNodes && !node.HasAttributes)
+                {
+                    _root.RemoveChild(node);
+                }
+            }
 
             using (var reader = new XmlNodeReader(_projectDocument))
             {

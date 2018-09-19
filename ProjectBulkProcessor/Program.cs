@@ -1,8 +1,10 @@
 ﻿using System;
 using Autofac;
 using CommandLine;
+using ProjectBulkProcessor.Clean;
 using ProjectBulkProcessor.Configration;
 using ProjectBulkProcessor.Extensions;
+using ProjectBulkProcessor.Shared;
 using ProjectBulkProcessor.Upgrade;
 
 namespace ProjectBulkProcessor
@@ -15,10 +17,26 @@ namespace ProjectBulkProcessor
         {
             Container.AssertConfigurationIsValid();
 
-            Parser.Default.ParseArguments<UpgradeParameters, EnrichParameters>(args)
+            Parser.Default.ParseArguments<UpgradeParameters, EnrichParameters, CleanParameters>(args)
                   .MapResult((UpgradeParameters upgrade) => UpgradeProjects(upgrade),
                              (EnrichParameters enrich) => EnrichProjects(enrich),
-                             errors => -1);
+                             (CleanParameters clean) => CleanProjects(clean),
+                              errors => -1);
+        }
+
+        private static int CleanProjects(CleanParameters clean)
+        {
+            try
+            {
+                var orchestrator = Container.Resolve<ICleanOrchestrator>();
+                orchestrator.CleanProjects(clean.RootPath);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                return -1;
+            }
         }
 
         private static int EnrichProjects(EnrichParameters enrich)
@@ -45,7 +63,9 @@ namespace ProjectBulkProcessor
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterModule<SharedModule>();
             builder.RegisterModule<UpgradeModule>();
+            builder.RegisterModule<CleanModule>();
 
             return builder.Build();
         }
