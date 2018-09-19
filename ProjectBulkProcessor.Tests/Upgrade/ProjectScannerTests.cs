@@ -5,8 +5,8 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
 using Moq;
-using ProjectBulkProcessor.Upgrade.Interfaces;
-using ProjectBulkProcessor.Upgrade.Processors;
+using ProjectBulkProcessor.Shared.Interfaces;
+using ProjectBulkProcessor.Shared.Processors;
 using Xunit;
 
 namespace ProjectBulkProcessor.Tests.Upgrade

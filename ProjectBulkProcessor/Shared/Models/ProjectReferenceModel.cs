@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectBulkProcessor.Upgrade.Models
+namespace ProjectBulkProcessor.Shared.Models
 {
     public class ProjectReferenceModel : IEquatable<ProjectReferenceModel>
     {

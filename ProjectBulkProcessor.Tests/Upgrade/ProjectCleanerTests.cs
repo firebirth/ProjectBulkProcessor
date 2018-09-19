@@ -2,9 +2,9 @@
 using System.Collections.Immutable;
 using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
+using ProjectBulkProcessor.Shared.Models;
+using ProjectBulkProcessor.Shared.Processors;
 using ProjectBulkProcessor.Tests.Assertions;
-using ProjectBulkProcessor.Upgrade.Models;
-using ProjectBulkProcessor.Upgrade.Processors;
 using Xunit;
 
 namespace ProjectBulkProcessor.Tests.Upgrade

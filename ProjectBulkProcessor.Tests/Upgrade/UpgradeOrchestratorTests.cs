@@ -4,6 +4,8 @@ using System.IO.Abstractions;
 using System.Linq;
 using Moq;
 using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Shared.Interfaces;
+using ProjectBulkProcessor.Shared.Models;
 using ProjectBulkProcessor.Upgrade;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Models;
@@ -16,15 +18,18 @@ namespace ProjectBulkProcessor.Tests.Upgrade
         private readonly UpgradeOrchestrator _sut;
         private readonly Mock<IProjectScanner> _scannerMock;
         private readonly Mock<IProjectCleaner> _cleanerMock;
+        private readonly Mock<IOptionsParser> _optionsParserMock;
 
         public UpgradeOrchestratorTests()
         {
             _scannerMock = new Mock<IProjectScanner>();
             _cleanerMock = new Mock<IProjectCleaner>();
+            _optionsParserMock = new Mock<IOptionsParser>();
 
             _scannerMock.Setup(s => s.ScanForProjects(It.IsAny<string>())).Returns(Enumerable.Empty<ProjectModel>());
+            _optionsParserMock.Setup(p => p.ParseProjectOptions(It.IsAny<FileInfoBase>())).Returns(new OptionsModel());
 
-            _sut = new UpgradeOrchestrator(_scannerMock.Object, _cleanerMock.Object);
+            _sut = new UpgradeOrchestrator(_scannerMock.Object, _cleanerMock.Object, _optionsParserMock.Object);
         }
 
         [Theory]
@@ -48,8 +53,7 @@ namespace ProjectBulkProcessor.Tests.Upgrade
             projectFileMock.Setup(p => p.CreateText()).Returns(StreamWriter.Null);
             var projectModel = new ProjectModel(projectFileMock.Object, 
                                                 Enumerable.Empty<ProjectReferenceModel>().ToImmutableList(),
-                                                Enumerable.Empty<PackageDependencyModel>().ToImmutableList(),
-                                                new OptionsModel());
+                                                Enumerable.Empty<PackageDependencyModel>().ToImmutableList());
             _scannerMock.Setup(s => s.ScanForProjects(rootPath)).Returns(new[] {projectModel});
 
             var upgradeParameters = new UpgradeParameters(rootPath);
@@ -58,6 +62,7 @@ namespace ProjectBulkProcessor.Tests.Upgrade
 
             _scannerMock.Verify(s => s.ScanForProjects(rootPath), Times.Once);
             _cleanerMock.Verify(c => c.DeleteDeprecatedFiles(rootPath), Times.Once);
+            _optionsParserMock.Verify(c => c.ParseProjectOptions(projectFileMock.Object), Times.Once);
             projectFileMock.Verify(f => f.CreateText(), Times.Once);
         }
     }

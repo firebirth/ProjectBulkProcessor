@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
-using ProjectBulkProcessor.Upgrade.Models;
+using ProjectBulkProcessor.Shared.Models;
 
 namespace ProjectBulkProcessor.Tests.Assertions
 {
@@ -31,17 +31,6 @@ namespace ProjectBulkProcessor.Tests.Assertions
             HasPackageDependency = hasPackageDependency;
 
             return new AndThenConstraint<ProjectModelAssertions>(this);
-        }
-
-        public AndConstraint<ProjectModelAssertions> BeExecutable(bool expectedIsExecutable = true, string because = "", params object[] becauseArgs)
-        {
-            Execute.Assertion
-                   .BecauseOf(because, becauseArgs)
-                   .Given(() => Subject.Options.IsExecutable)
-                   .ForCondition(actualIsExecutable => actualIsExecutable == expectedIsExecutable)
-                   .FailWith($"Expected project to be {(expectedIsExecutable ? "executable" : "library")}, but it wasn't");
-
-            return new AndConstraint<ProjectModelAssertions>(this);
         }
 
         public AndConstraint<ProjectModelAssertions> HaveLocation(string expectedPath, string because = "", params object[] becauseArgs)

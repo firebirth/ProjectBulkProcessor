@@ -6,18 +6,16 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using ProjectBulkProcessor.Extensions;
-using ProjectBulkProcessor.Upgrade.Interfaces;
-using ProjectBulkProcessor.Upgrade.Models;
+using ProjectBulkProcessor.Shared.Interfaces;
+using ProjectBulkProcessor.Shared.Models;
 
-namespace ProjectBulkProcessor.Upgrade.Processors
+namespace ProjectBulkProcessor.Shared.Processors
 {
     public class ProjectParser : IProjectParser
     {
-        private readonly IOptionsParser _optionsParser;
 
-        public ProjectParser(IOptionsParser optionsParser)
+        public ProjectParser()
         {
-            _optionsParser = optionsParser;
         }
 
         public ProjectModel ParseProject(FileInfoBase projectFile)
@@ -34,11 +32,10 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                                        .Select(s => new ProjectReferenceModel(s))
                                        .ToImmutableList();
 
-            var options = _optionsParser.ParseProjectOptions(projectFile);
 
             var packagesInfo = ParseDependencies(projectFile).ToImmutableList();
 
-            return new ProjectModel(projectFile, projectReferences, packagesInfo, options);
+            return new ProjectModel(projectFile, projectReferences, packagesInfo);
         }
 
         private static IEnumerable<PackageDependencyModel> ParseDependencies(FileInfoBase projectFile)

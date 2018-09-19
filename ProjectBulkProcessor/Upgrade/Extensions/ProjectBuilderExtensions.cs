@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ProjectBulkProcessor.Extensions;
+using ProjectBulkProcessor.Shared.Models;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Models;
 

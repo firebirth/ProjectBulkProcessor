@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using ProjectBulkProcessor.Configration;
+using ProjectBulkProcessor.Shared.Interfaces;
 using ProjectBulkProcessor.Upgrade.Extensions;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Processors;
@@ -11,11 +12,13 @@ namespace ProjectBulkProcessor.Upgrade
     {
         private readonly IProjectScanner _projectScanner;
         private readonly IProjectCleaner _projectCleaner;
+        private readonly IOptionsParser _optionsParser;
 
-        public UpgradeOrchestrator(IProjectScanner projectScanner, IProjectCleaner projectCleaner)
+        public UpgradeOrchestrator(IProjectScanner projectScanner, IProjectCleaner projectCleaner, IOptionsParser optionsParser)
         {
             _projectScanner = projectScanner;
             _projectCleaner = projectCleaner;
+            _optionsParser = optionsParser;
         }
 
         public void ProcessProjects(UpgradeParameters parameters)
@@ -24,8 +27,9 @@ namespace ProjectBulkProcessor.Upgrade
 
             foreach (var projectModel in models)
             {
+                var options = _optionsParser.ParseProjectOptions(projectModel.ProjectFile);
                 var project = ProjectBuilder.CreateProject()
-                                            .SetProjectOptions(projectModel.Options)
+                                            .SetProjectOptions(options)
                                             .AddProjectReferences(projectModel.ProjectReferences)
                                             .AddPackageDependencies(projectModel.PackageDependencies)
                                             .Build();

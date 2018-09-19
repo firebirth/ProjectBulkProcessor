@@ -1,7 +1,7 @@
-﻿using ProjectBulkProcessor.Upgrade.Models;
+﻿using ProjectBulkProcessor.Shared.Models;
 using System.Collections.Immutable;
 
-namespace ProjectBulkProcessor.Upgrade.Interfaces
+namespace ProjectBulkProcessor.Shared.Interfaces
 {
     public interface IProjectCleaner
     {

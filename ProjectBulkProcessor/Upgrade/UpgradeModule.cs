@@ -1,5 +1,7 @@
 ﻿using System.IO.Abstractions;
 using Autofac;
+using ProjectBulkProcessor.Shared.Interfaces;
+using ProjectBulkProcessor.Shared.Processors;
 using ProjectBulkProcessor.Upgrade.Interfaces;
 using ProjectBulkProcessor.Upgrade.Processors;
 

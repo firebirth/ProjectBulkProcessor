@@ -2,10 +2,10 @@
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using ProjectBulkProcessor.Upgrade.Interfaces;
-using ProjectBulkProcessor.Upgrade.Models;
+using ProjectBulkProcessor.Shared.Interfaces;
+using ProjectBulkProcessor.Shared.Models;
 
-namespace ProjectBulkProcessor.Upgrade.Processors
+namespace ProjectBulkProcessor.Shared.Processors
 {
     public class ProjectScanner : IProjectScanner
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.IO.Abstractions;
 
-namespace ProjectBulkProcessor.Upgrade.Models
+namespace ProjectBulkProcessor.Shared.Models
 {
     public class ProjectModel
     {
@@ -9,17 +9,14 @@ namespace ProjectBulkProcessor.Upgrade.Models
         public FileInfoBase ProjectFile { get; }
         public IImmutableList<ProjectReferenceModel> ProjectReferences { get; }
         public IImmutableList<PackageDependencyModel> PackageDependencies { get; }
-        public OptionsModel Options { get; }
 
         public ProjectModel(FileInfoBase projectFile,
                             IImmutableList<ProjectReferenceModel> projectReferences,
-                            IImmutableList<PackageDependencyModel> packageDependencies,
-                            OptionsModel options)
+                            IImmutableList<PackageDependencyModel> packageDependencies)
         {
             ProjectFile = projectFile;
             ProjectReferences = projectReferences;
             PackageDependencies = packageDependencies;
-            Options = options;
         }
     }
 }

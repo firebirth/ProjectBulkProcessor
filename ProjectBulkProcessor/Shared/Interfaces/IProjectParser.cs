@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
-using ProjectBulkProcessor.Upgrade.Models;
+using ProjectBulkProcessor.Shared.Models;
 
-namespace ProjectBulkProcessor.Upgrade.Interfaces
+namespace ProjectBulkProcessor.Shared.Interfaces
 {
     public interface IProjectParser
     {
