@@ -2,14 +2,11 @@
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using FluentAssertions;
-using Moq;
 using ProjectBulkProcessor.Shared.Processors;
 using ProjectBulkProcessor.Tests.Assertions;
-using ProjectBulkProcessor.Upgrade.Interfaces;
-using ProjectBulkProcessor.Upgrade.Models;
 using Xunit;
 
-namespace ProjectBulkProcessor.Tests.Upgrade
+namespace ProjectBulkProcessor.Tests.Shared
 {
     public class ProjectParserTests
     {

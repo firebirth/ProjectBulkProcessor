@@ -9,7 +9,7 @@ using ProjectBulkProcessor.Shared.Interfaces;
 using ProjectBulkProcessor.Shared.Processors;
 using Xunit;
 
-namespace ProjectBulkProcessor.Tests.Upgrade
+namespace ProjectBulkProcessor.Tests.Shared
 {
     public class ProjectScannerTests
     {
