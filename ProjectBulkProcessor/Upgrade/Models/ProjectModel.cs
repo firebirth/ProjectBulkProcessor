@@ -5,6 +5,7 @@ namespace ProjectBulkProcessor.Upgrade.Models
 {
     public class ProjectModel
     {
+        public string ProjectName => ProjectFile.Name;
         public FileInfoBase ProjectFile { get; }
         public IImmutableList<ProjectReferenceModel> ProjectReferences { get; }
         public IImmutableList<PackageDependencyModel> PackageDependencies { get; }

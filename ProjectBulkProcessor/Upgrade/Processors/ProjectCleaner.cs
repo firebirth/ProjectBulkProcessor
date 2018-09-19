@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Immutable;
+using System.IO;
 using System.IO.Abstractions;
 using ProjectBulkProcessor.Upgrade.Interfaces;
+using ProjectBulkProcessor.Upgrade.Models;
 
 namespace ProjectBulkProcessor.Upgrade.Processors
 {
@@ -14,6 +17,11 @@ namespace ProjectBulkProcessor.Upgrade.Processors
         public ProjectCleaner(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
+        }
+
+        public IImmutableList<ProjectModel> CleanTransitiveReferences(IImmutableList<ProjectModel> projectModels)
+        {
+            return projectModels;
         }
 
         public void DeleteDeprecatedFiles(string rootFolder)
