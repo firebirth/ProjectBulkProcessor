@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.IO.Abstractions;
@@ -13,17 +14,19 @@ namespace ProjectBulkProcessor.Shared.Processors
 {
     public class ProjectParser : IProjectParser
     {
-
-        public ProjectParser()
-        {
-        }
-
         public ProjectModel ParseProject(FileInfoBase projectFile)
         {
             XDocument doc;
             using (var fs = projectFile.OpenRead())
             {
-                doc = XDocument.Load(fs);
+                try
+                {
+                    doc = XDocument.Load(fs);
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
             var projectReferences = doc.GetProjectElementsByName("ProjectReference")

@@ -34,7 +34,11 @@ namespace ProjectBulkProcessor.Shared.Processors
 
             foreach (var projectFile in projectFiles)
             {
-                yield return _projectParser.ParseProject(projectFile);
+                var projectModel = _projectParser.ParseProject(projectFile);
+                if (projectModel != null)
+                {
+                    yield return projectModel;
+                }
             }
         }
     }

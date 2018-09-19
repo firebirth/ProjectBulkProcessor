@@ -33,13 +33,16 @@ namespace ProjectBulkProcessor.Upgrade.Processors
                 [nameof(AssemblyVersionAttribute)] = nameof(OptionsModel.Version)
             }.ToImmutableDictionary();
 
-            PropertyNameAssemblyInfoAttributeMap =
-                AssemblyInfoAttributePropertyNameMap.ToImmutableDictionary(kvp => kvp.Value, kvp => kvp.Key);
+            PropertyNameAssemblyInfoAttributeMap = AssemblyInfoAttributePropertyNameMap.ToImmutableDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
             OldNewFrameworkAliasMap = new Dictionary<string, string>
             {
                 // TODO: add other frameworks
                 ["v4.6.2"] = "net462",
+                ["v4.6.1"] = "net461",
+                ["v4.5.2"] = "net452",
+                ["v4.5"] = "net45",
+                ["v4.0"] = "net40",
             }.ToImmutableDictionary();
 
             OptionsModelProperties = typeof(OptionsModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
