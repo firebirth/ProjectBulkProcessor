@@ -16,49 +16,50 @@ let private getAttributeList assemblyInfoFile =
     |> fun tree -> tree.GetRoot() :?> CompilationUnitSyntax
     |> fun cus -> cus.AttributeLists
 
-let private buildAttributeOptions (attributeList: IEnumerable<AttributeListSyntax>) opts =
+let private buildAttributeOptions opts (attributeList: IEnumerable<AttributeListSyntax>) =
     let buildAttributeValue (attribute: AttributeSyntax) = attribute.ArgumentList.Arguments |> Seq.map (fun a -> a.ToFullString().Trim '"') |> String.concat ","
-
     let mutable options = opts
     for attribute in attributeList |> Seq.collect (fun attributeList -> attributeList.Attributes) do
         match attribute.Name with
-        | :? IdentifierNameSyntax as ins when ins.Identifier.Text = "AssemblyCompany" -> options <- { options with company = buildAttributeValue attribute }
-        | :? IdentifierNameSyntax as ins when ins.Identifier.Text = "AssemblyCopyright" -> options <- { options with copyright = buildAttributeValue attribute }
-        | :? IdentifierNameSyntax as ins when ins.Identifier.Text = "AssemblyDescription" -> options <- { options with description = buildAttributeValue attribute }
-        | :? IdentifierNameSyntax as ins when ins.Identifier.Text = "AssemblyProduct" -> options <- { options with product = buildAttributeValue attribute }
-        | :? IdentifierNameSyntax as ins when ins.Identifier.Text = "AssemblyVersion" -> options <- { options with version = buildAttributeValue attribute }
+        | :? IdentifierNameSyntax as ins -> match ins.Identifier.Text with
+                                            | "AssemblyCompany" -> options <- { options with company = buildAttributeValue attribute }
+                                            | "AssemblyCopyright" -> options <- { options with copyright = buildAttributeValue attribute }
+                                            | "AssemblyDescription" -> options <- { options with description = buildAttributeValue attribute }
+                                            | "AssemblyProduct" -> options <- { options with product = buildAttributeValue attribute }
+                                            | "AssemblyVersion" -> options <- { options with version = buildAttributeValue attribute }
+                                            | _ -> ()
         | _ -> ()
     options
 
-let private buildAssemblyInfoOptions projectDir =
+let private buildAssemblyInfoOptions opts projectDir =
     projectDir
     |> findAssemblyInfoFiles
     |> Seq.exactlyOne
     |> getAttributeList
-    |> buildAttributeOptions
+    |> buildAttributeOptions opts
 
 let private readProjectFile projectDir =
     Directory.GetFiles(projectDir, "*.csproj")
     |> Seq.exactlyOne
     |> fun projFilePath -> using (File.OpenRead projFilePath) XDocument.Load
 
-let private buildFrameworkOptions (xdoc: XDocument) opts =
-    let mutable options = opts
+let private buildCsprojOptions opts (xdoc: XDocument) =
     let oldFramework = XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion"
-    let a = match oldFramework with
-        | null -> ()
-        | _ -> _
-    let newFramework = match oldFramework.Value with
-                       | "v4.6.2" -> "net462"
-                       | _ -> "net471"
-    options <- {options with targetFramework = newFramework}
-    options
-
-let private buildOutputTypeOptions (xdoc: XDocument) opts =
+    let newFramework = match oldFramework with
+                       | null -> "net471"
+                       | _ -> match oldFramework.Value with
+                              | "v4.6.2" -> "net462"
+                              | _ -> "net471"
     let outputTypeElement = XmlHelpers.getProjectElementByName xdoc "OutputType"
-    let outputType = match outputTypeElement.Value with
-        | 
+    let outputType = match outputTypeElement with
+                     | null -> false
+                     | _ -> match outputTypeElement.Value with
+                            | "Exe" -> true
+                            | _ -> false
+    { opts with targetFramework = newFramework; isExecutable = outputType }
 
-let private a =
-    readProjectFile ""
-    |> buildFrameworkOptions
+let buildProjectOptions projectDir =
+    let defaultOptions = Unchecked.defaultof<Options>
+    readProjectFile projectDir
+    |> buildCsprojOptions defaultOptions
+    |> buildAssemblyInfoOptions <| projectDir
