@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="XmlHelpers.fs" />
     <Compile Include="OptionsParser.fs" />
     <Compile Include="Scanner.fs" />
     <Compile Include="Program.fs" />
