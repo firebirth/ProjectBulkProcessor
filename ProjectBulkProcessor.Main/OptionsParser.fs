@@ -1,4 +1,4 @@
-﻿module Parser
+﻿module OptionsParser
 
 open System.IO
 open System.Collections.Generic
