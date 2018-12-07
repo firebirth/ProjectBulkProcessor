@@ -1,49 +1,44 @@
 ﻿module OptionsParser
 
-open System.IO
-open System.Collections.Generic
-open Microsoft.CodeAnalysis.CSharp
 open Microsoft.CodeAnalysis.CSharp.Syntax
 open System.Xml.Linq
+open Microsoft.CodeAnalysis
+open Scanner
 
-type Options = { targetFramework:string; isExecutable:bool; copyright: string; company: string; authors: string; description: string; version: string; product: string }
+type Options = { 
+    targetFramework: string;
+    isExecutable: bool;
+    copyright: string option;
+    company: string option;
+    authors: string option;
+    description: string option;
+    version: string option;
+    product: string option
+ }
 
-let private findAssemblyInfoFiles projectDir = Directory.GetFiles(projectDir, "AssemblyInfo.cs", SearchOption.AllDirectories)
+let private getAttributeList (assemblyInfo: SyntaxTree option) = 
+    match assemblyInfo with
+    | Some ai -> ai.GetRoot() :?> CompilationUnitSyntax 
+                 |> fun cus -> cus.AttributeLists
+                 |> Seq.collect (fun a -> a.Attributes)
+    | None -> Seq.empty
 
-let private getAttributeList assemblyInfoFile = 
-    using (File.OpenText assemblyInfoFile) (fun fs -> fs.ReadToEnd())
-    |> CSharpSyntaxTree.ParseText
-    |> fun tree -> tree.GetRoot() :?> CompilationUnitSyntax
-    |> fun cus -> cus.AttributeLists
-
-let private buildAttributeOptions opts (attributeList: IEnumerable<AttributeListSyntax>) =
+let private buildAttributeOptions opts (attributeList: AttributeSyntax seq)  =
     let buildAttributeValue (attribute: AttributeSyntax) = attribute.ArgumentList.Arguments |> Seq.map (fun a -> a.ToFullString().Trim '"') |> String.concat ","
     let mutable options = opts
-    for attribute in attributeList |> Seq.collect (fun attributeList -> attributeList.Attributes) do
+    for attribute in attributeList do
         match attribute.Name with
         | :? IdentifierNameSyntax as ins -> match ins.Identifier.Text with
-                                            | "AssemblyCompany" -> options <- { options with company = buildAttributeValue attribute }
-                                            | "AssemblyCopyright" -> options <- { options with copyright = buildAttributeValue attribute }
-                                            | "AssemblyDescription" -> options <- { options with description = buildAttributeValue attribute }
-                                            | "AssemblyProduct" -> options <- { options with product = buildAttributeValue attribute }
-                                            | "AssemblyVersion" -> options <- { options with version = buildAttributeValue attribute }
+                                            | "AssemblyCompany" -> options <- { options with company = Some (buildAttributeValue attribute) }
+                                            | "AssemblyCopyright" -> options <- { options with copyright = Some (buildAttributeValue attribute) }
+                                            | "AssemblyDescription" -> options <- { options with description = Some (buildAttributeValue attribute) }
+                                            | "AssemblyProduct" -> options <- { options with product = Some (buildAttributeValue attribute) }
+                                            | "AssemblyVersion" -> options <- { options with version = Some (buildAttributeValue attribute) }
                                             | _ -> ()
         | _ -> ()
     options
 
-let private buildAssemblyInfoOptions opts projectDir =
-    projectDir
-    |> findAssemblyInfoFiles
-    |> Seq.exactlyOne
-    |> getAttributeList
-    |> buildAttributeOptions opts
-
-let private readProjectFile projectDir =
-    Directory.GetFiles(projectDir, "*.csproj")
-    |> Seq.exactlyOne
-    |> fun projFilePath -> using (File.OpenRead projFilePath) XDocument.Load
-
-let private buildCsprojOptions opts (xdoc: XDocument) =
+let private buildCsprojOptions  (xdoc: XDocument) opts =
     let oldFramework = XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion"
     let newFramework = match oldFramework with
                        | null -> "net471"
@@ -58,8 +53,10 @@ let private buildCsprojOptions opts (xdoc: XDocument) =
                             | _ -> false
     { opts with targetFramework = newFramework; isExecutable = outputType }
 
-let buildProjectOptions projectDir =
-    let defaultOptions = Unchecked.defaultof<Options>
-    readProjectFile projectDir
-    |> buildCsprojOptions defaultOptions
-    |> buildAssemblyInfoOptions <| projectDir
+let buildProjectOptions (projectInfos: projectInfo seq) =
+    seq {
+        for projectInfo in projectInfos do
+            yield Unchecked.defaultof<Options>
+                  |> buildCsprojOptions projectInfo.project
+                  |> buildAttributeOptions <| getAttributeList projectInfo.assemblyInfo
+    }
