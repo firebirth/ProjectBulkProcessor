@@ -5,7 +5,7 @@ open System.Xml.Linq
 open Microsoft.CodeAnalysis.CSharp
 open Microsoft.CodeAnalysis
 
-type projectInfo = {
+type ProjectInfo = {
     project: XDocument;
     packages: XDocument option;
     assemblyInfo: SyntaxTree option
@@ -34,5 +34,6 @@ let private buildProjectInfo (projectFile: FileInfo) =
     }
 
 let getProjectInfos rootPath = 
-    findProjectFiles rootPath
+    rootPath
+    |> findProjectFiles
     |> Seq.map buildProjectInfo

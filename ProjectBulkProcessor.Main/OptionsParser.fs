@@ -53,7 +53,7 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
                             | _ -> false
     { opts with targetFramework = newFramework; isExecutable = outputType }
 
-let buildProjectOptions (projectInfos: projectInfo seq) =
+let buildProjectOptions (projectInfos: ProjectInfo seq) =
     seq {
         for projectInfo in projectInfos do
             yield Unchecked.defaultof<Options>
