@@ -13,7 +13,7 @@ type ProjectInfo = {
 
 let private findProjectFiles rootPath =
     Directory.GetFiles(rootPath, "*.csproj", SearchOption.AllDirectories)
-    |> Seq.map (fun f -> new FileInfo(f))
+    |> Array.map (fun f -> new FileInfo(f))
 
 let private buildSyntaxTree filename = 
     using (File.OpenText filename) (fun fs -> fs.ReadToEnd())
@@ -29,11 +29,11 @@ let private findProjectRelatedFile filename (projectFile: FileInfo)  =
 let private buildProjectInfo (projectFile: FileInfo) =
     { 
         project = projectFile.FullName |> readXml;
-        packages = projectFile |> findProjectRelatedFile "AssemblyInfo.cs" |> Option.map readXml;
-        assemblyInfo = projectFile |> findProjectRelatedFile "packages.config" |> Option.map buildSyntaxTree
+        packages = projectFile |> findProjectRelatedFile  "packages.config" |> Option.map readXml;
+        assemblyInfo = projectFile |> findProjectRelatedFile "AssemblyInfo.cs" |> Option.map buildSyntaxTree
     }
 
 let getProjectInfos rootPath = 
     rootPath
     |> findProjectFiles
-    |> Seq.map buildProjectInfo
+    |> Array.map buildProjectInfo

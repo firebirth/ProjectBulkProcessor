@@ -9,7 +9,11 @@ do
     projectNamespaceManager.AddNamespace("project", "http://schemas.microsoft.com/developer/msbuild/2003")
 
 let getProjectElementByName (xElement: XNode) name =
-    xElement.XPathSelectElement("//project:" + name, projectNamespaceManager)
+    match xElement.XPathSelectElement("//project:" + name, projectNamespaceManager) with
+    | null -> None
+    | xe -> Some (xe)
 
 let getProjectElementsByName (xElement: XNode) name =
-    xElement.XPathSelectElements("//project:" + name, projectNamespaceManager)
+    match xElement.XPathSelectElements("//project:" + name, projectNamespaceManager) with
+    | null -> None
+    | xe -> Some (xe)
