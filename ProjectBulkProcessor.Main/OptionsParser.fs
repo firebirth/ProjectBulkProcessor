@@ -15,28 +15,34 @@ type Options = {
     version: string option;
     product: string option;
  }
- with defaultOptions = { targetFramework="net472";
-    isExecutable=false;
-    copyright=None;
-    company=None;
-    authors=None;
-    description=None;
-    version=None;
-    product=None
- }
+ with static member defaultOptions = {
+        targetFramework = "net472";
+        isExecutable = false;
+        copyright = None;
+        company = None;
+        authors = None;
+        description = None;
+        version = None;
+        product = None;
+}
 
-let private getAttributeList (assemblyInfo: SyntaxTree option) = 
+let private getAttributeList (assemblyInfo: SyntaxTree option) =
+    let attributeListSelector (al: AttributeListSyntax) = al.Attributes
     match assemblyInfo with
     | Some ai -> let root = ai.GetRoot() :?> CompilationUnitSyntax 
                  root.AttributeLists
-                 |> Seq.collect (fun al -> al.Attributes)
+                 |> Seq.collect attributeListSelector
                  |> Array.ofSeq
     | None -> Array.empty
 
-let private buildAttributeValue (attribute: AttributeSyntax) = attribute.ArgumentList.Arguments |> Seq.map (fun a -> a.ToFullString().Trim '"') |> String.concat ","
+let private buildAttributeValue (attribute: AttributeSyntax) =
+    let argumetNameSelector (a: AttributeArgumentSyntax) = a.ToFullString().Trim '"'
+    attribute.ArgumentList.Arguments
+    |> Seq.map argumetNameSelector
+    |> String.concat ","
 
 let private buildAttributeOptions opts attributes =
-    let folder optionState (attribute: AttributeSyntax) =
+    let optionBuilder optionState (attribute: AttributeSyntax) =
         match attribute.Name with
         | :? IdentifierNameSyntax as ins -> match ins.Identifier.Text with
                                             | "AssemblyCompany" -> { optionState with company = Some (buildAttributeValue attribute) }
@@ -47,12 +53,13 @@ let private buildAttributeOptions opts attributes =
                                             | _ -> optionState
         | _ -> optionState
 
-    Array.fold folder opts attributes
+    Array.fold optionBuilder opts attributes
 
 let private buildCsprojOptions  (xdoc: XDocument) opts =
     let newFramework = match XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion" with
                        | None -> "net471"
                        | Some xml -> match xml.Value with
+                                     | "v4.6.1" -> "net461"
                                      | "v4.6.2" -> "net462"
                                      | _ -> "net471"
     let outputType = match XmlHelpers.getProjectElementByName xdoc "OutputType" with
@@ -64,7 +71,8 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
 
 let private projectInfoMapper projectInfo =
     Options.defaultOptions
-    |> buildCsprojOptions projectInfo.project
     |> buildAttributeOptions <| getAttributeList projectInfo.assemblyInfo
+    |> buildCsprojOptions projectInfo.project
 
-let buildProjectOptions projectInfos = Array.map projectInfoMapper projectInfos
+let buildProjectOptions projectInfos =
+    Array.map projectInfoMapper projectInfos

@@ -1,4 +1,4 @@
-﻿module Scanner
+﻿module ProjectScanner
 
 open System.IO
 open System.Xml.Linq
@@ -8,15 +8,17 @@ open Microsoft.CodeAnalysis
 type ProjectInfo = {
     project: XDocument;
     packages: XDocument option;
-    assemblyInfo: SyntaxTree option
+    assemblyInfo: SyntaxTree option;
 }
 
 let private findProjectFiles rootPath =
+    let fileInfoMapper filePath = new FileInfo(filePath)
     Directory.GetFiles(rootPath, "*.csproj", SearchOption.AllDirectories)
-    |> Array.map (fun f -> new FileInfo(f))
+    |> Array.map fileInfoMapper
 
-let private buildSyntaxTree filename = 
-    using (File.OpenText filename) (fun fs -> fs.ReadToEnd())
+let private buildSyntaxTree filename =
+    use stream = File.OpenText filename
+    stream.ReadToEnd()
     |> CSharpSyntaxTree.ParseText
 
 let private readXml filePath =
@@ -28,9 +30,9 @@ let private findProjectRelatedFile filename (projectFile: FileInfo)  =
 
 let private buildProjectInfo (projectFile: FileInfo) =
     { 
-        project = projectFile.FullName |> readXml;
-        packages = projectFile |> findProjectRelatedFile  "packages.config" |> Option.map readXml;
-        assemblyInfo = projectFile |> findProjectRelatedFile "AssemblyInfo.cs" |> Option.map buildSyntaxTree
+        project = readXml projectFile.FullName;
+        packages = findProjectRelatedFile "packages.config" projectFile |> Option.map readXml;
+        assemblyInfo = findProjectRelatedFile "AssemblyInfo.cs" projectFile |> Option.map buildSyntaxTree
     }
 
 let getProjectInfos rootPath = 

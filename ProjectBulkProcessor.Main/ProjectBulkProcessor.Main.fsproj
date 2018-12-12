@@ -6,9 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="OptionHelper.fs" />
     <Compile Include="XmlHelpers.fs" />
-    <Compile Include="Scanner.fs" />
+    <Compile Include="ProjectScanner.fs" />
     <Compile Include="OptionsParser.fs" />
+    <Compile Include="DependencyParser.fs" />
+    <Compile Include="ReferenceParser.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
