@@ -18,6 +18,16 @@ let getProjectElementsByName (xElement: XNode) elementName =
     | null -> None
     | xe -> Some (Array.ofSeq xe)
 
+let getElementByName (xElement: XNode) elementName =
+    match xElement.XPathSelectElement elementName with
+    | null -> None
+    | xe -> Some (xe)
+
+let getElementsByName (xElement: XNode) elementName =
+    match xElement.XPathSelectElements elementName with
+    | null -> None
+    | xe -> Some (Array.ofSeq xe)
+
 let getAttribute (xElement: XElement) attributeName =
     match xElement.Attribute <| XName.Get attributeName with
     | null -> None
@@ -30,7 +40,13 @@ let getAttributeValue xElement attributeName =
                         | null -> None
                         | value -> Some (value)
 
-let mapElements xdoc xPath elementSelector =
-    match getProjectElementsByName xdoc xPath with
+let private mapElementsBase elementLookup xdoc xPath elementSelector =
+    match elementLookup xdoc xPath with
     | Some elements -> Some (Array.map elementSelector elements)
     | None -> None
+
+let mapProjectElements xdoc xPath elementSelector =
+    mapElementsBase getProjectElementsByName xdoc xPath elementSelector
+
+let mapElements xdoc xPath elementSelector =
+    mapElementsBase getElementsByName xdoc xPath elementSelector

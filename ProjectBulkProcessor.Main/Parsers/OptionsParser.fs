@@ -3,7 +3,6 @@
 open Microsoft.CodeAnalysis.CSharp.Syntax
 open System.Xml.Linq
 open Microsoft.CodeAnalysis
-open Scanner
 
 type Options = { 
     targetFramework: string;
@@ -69,10 +68,7 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
                                    | _ -> false
     { opts with targetFramework = newFramework; isExecutable = outputType }
 
-let private projectInfoMapper projectInfo =
+let buildProjectOptions assemblyInfo project =
     Options.defaultOptions
-    |> buildAttributeOptions <| getAttributeList projectInfo.assemblyInfo
-    |> buildCsprojOptions projectInfo.project
-
-let buildProjectOptions projectInfos =
-    Array.map projectInfoMapper projectInfos
+    |> buildAttributeOptions <| getAttributeList assemblyInfo
+    |> buildCsprojOptions project
