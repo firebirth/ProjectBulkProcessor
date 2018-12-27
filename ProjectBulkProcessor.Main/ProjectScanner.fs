@@ -21,7 +21,7 @@ type ProjectInfo = {
 }
 
 let private findProjectFiles rootPath =
-    let fileInfoMapper filePath = new FileInfo(filePath)
+    let fileInfoMapper filePath = FileInfo filePath
     Directory.GetFiles(rootPath, "*.csproj", SearchOption.AllDirectories)
     |> Array.map fileInfoMapper
 
@@ -54,5 +54,4 @@ let private buildProjectInfo projectFiles =
 let getProjectInfos rootPath = 
     rootPath
     |> findProjectFiles
-    |> Array.map readProjectFiles
-    |> Array.map buildProjectInfo
+    |> Array.map (readProjectFiles >> buildProjectInfo)
