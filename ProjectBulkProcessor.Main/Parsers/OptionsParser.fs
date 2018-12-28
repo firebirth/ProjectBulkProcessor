@@ -6,7 +6,7 @@ open Microsoft.CodeAnalysis
 
 type Options = { 
     targetFramework: string;
-    isExecutable: bool;
+    outputType: string option;
     copyright: string option;
     company: string option;
     authors: string option;
@@ -16,7 +16,7 @@ type Options = {
  }
  with static member defaultOptions = {
         targetFramework = "net472";
-        isExecutable = false;
+        outputType = None;
         copyright = None;
         company = None;
         authors = None;
@@ -62,11 +62,9 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
                                      | "v4.6.2" -> "net462"
                                      | _ -> "net471"
     let outputType = match XmlHelpers.getProjectElementByName xdoc "OutputType" with
-                     | None -> false
-                     | Some xml -> match xml.Value with
-                                   | "Exe" -> true
-                                   | _ -> false
-    { opts with targetFramework = newFramework; isExecutable = outputType }
+                     | None -> None
+                     | Some xml -> Some (xml.Value)
+    { opts with targetFramework = newFramework; outputType = outputType }
 
 let buildProjectOptions assemblyInfo project =
     Options.defaultOptions

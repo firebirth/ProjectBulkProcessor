@@ -47,6 +47,8 @@ let private mapElementsBase elementLookup xdoc xPath elementSelector =
 
 let mapProjectElements xdoc xPath elementSelector =
     mapElementsBase getProjectElementsByName xdoc xPath elementSelector
+    |> Option.map OptionHelper.filterNones
 
 let mapElements xdoc xPath elementSelector =
     mapElementsBase getElementsByName xdoc xPath elementSelector
+    |> Option.map OptionHelper.filterNones

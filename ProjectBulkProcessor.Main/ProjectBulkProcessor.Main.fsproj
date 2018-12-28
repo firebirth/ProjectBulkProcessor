@@ -12,6 +12,7 @@
     <Compile Include="Parsers\DependencyParser.fs" />
     <Compile Include="Parsers\ReferenceParser.fs" />
     <Compile Include="ProjectScanner.fs" />
+    <Compile Include="ProjectBuilder.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

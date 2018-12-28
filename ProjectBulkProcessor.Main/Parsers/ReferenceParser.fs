@@ -10,4 +10,3 @@ let private elementSelector (xElement: XElement) =
 
 let findProjectReferences xdoc = 
     XmlHelpers.mapProjectElements xdoc "ProjectReference" elementSelector 
-    |> OptionHelper.filterNones
