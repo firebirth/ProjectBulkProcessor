@@ -26,18 +26,16 @@ type Options = {
 }
 
 let private getAttributeList (assemblyInfo: SyntaxTree option) =
-    let attributeListSelector (al: AttributeListSyntax) = al.Attributes
     match assemblyInfo with
     | Some ai -> let root = ai.GetRoot() :?> CompilationUnitSyntax 
                  root.AttributeLists
-                 |> Seq.collect attributeListSelector
+                 |> Seq.collect (fun al -> al.Attributes)
                  |> Array.ofSeq
     | None -> Array.empty
 
 let private buildAttributeValue (attribute: AttributeSyntax) =
-    let argumetNameSelector (a: AttributeArgumentSyntax) = a.ToFullString().Trim '"'
     attribute.ArgumentList.Arguments
-    |> Seq.map argumetNameSelector
+    |> Seq.map (fun a -> a.ToFullString().Trim '"')
     |> String.concat ","
 
 let private buildAttributeOptions opts attributes =
@@ -61,9 +59,8 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
                                      | "v4.6.1" -> "net461"
                                      | "v4.6.2" -> "net462"
                                      | _ -> "net471"
-    let outputType = match XmlHelpers.getProjectElementByName xdoc "OutputType" with
-                     | None -> None
-                     | Some xml -> Some (xml.Value)
+    let outputType = XmlHelpers.getProjectElementByName xdoc "OutputType"
+                     |> Option.map (fun x -> x.Value)
     { opts with targetFramework = newFramework; outputType = outputType }
 
 let buildProjectOptions assemblyInfo project =

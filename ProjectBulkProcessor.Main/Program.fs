@@ -4,6 +4,6 @@ open System
 
 [<EntryPoint>]
 let main argv =
-    let a = ProjectScanner.getProjectInfos "C:\\Repos\\OrderService"
+    let a = ProjectScanner.getProjectInfos "C:\\Repos\\OrderService" |> Array.map ProjectBuilder.buildProject
     printfn "Hello World from F#!"
     0 // return an integer exit code

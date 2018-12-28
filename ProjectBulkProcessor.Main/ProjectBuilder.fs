@@ -5,11 +5,10 @@ open ReferenceParser
 open OptionsParser
 open ProjectScanner
 open System.Xml.Linq
-open System
 
-let XAttribute name value = new XAttribute(XName.Get name, value)
-let XElement<'v> name ([<ParamArray>]value: 'v array when 'v :> obj) = new XElement(XName.Get name, value)
-let XDocument<'a> ([<ParamArray>]content: 'a array when 'a :> obj) = new XDocument(content)
+let private XAttribute name value = new XAttribute(XName.Get name, value)
+let private XElement<'a> name (value: 'a when 'a :> obj) = new XElement(XName.Get name, value)
+let private XDocument<'a> (content: 'a array when 'a :> obj) = new XDocument(content)
 
 let private mapDependencyToElements dependencies =
     let mapper dependecy =
@@ -46,5 +45,10 @@ let private buildElements projectInfo =
     |] |> OptionHelper.filterNones
 
 let buildProject projectInfo =
-    let a = buildElements projectInfo |> Array.append [| XAttribute "Sdk" "Microsoft.NET.Sdk" |] 
-    a |> XElement "Project" |> XDocument
+    projectInfo 
+    |> buildElements 
+    |> Array.map (fun e -> e :> XObject)
+    |> Array.append [| XAttribute "Sdk" "Microsoft.NET.Sdk" |] 
+    |> XElement "Project"
+    |> Array.create 1
+    |> XDocument

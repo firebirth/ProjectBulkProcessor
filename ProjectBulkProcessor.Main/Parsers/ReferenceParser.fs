@@ -9,4 +9,4 @@ let private elementSelector (xElement: XElement) =
     |> Option.map (fun p -> { relativePath = p })
 
 let findProjectReferences xdoc = 
-    XmlHelpers.mapProjectElements xdoc "ProjectReference" elementSelector 
+    XmlHelpers.mapProjectElements elementSelector xdoc "ProjectReference"
