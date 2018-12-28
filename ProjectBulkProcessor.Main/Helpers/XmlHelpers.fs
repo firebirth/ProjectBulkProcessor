@@ -11,38 +11,38 @@ do
 let getProjectElementByName (xElement: XNode) elementName =
     match xElement.XPathSelectElement("//project:" + elementName, projectNamespaceManager) with
     | null -> None
-    | xe -> Some (xe)
+    | xe -> Some xe
 
 let getProjectElementsByName (xElement: XNode) elementName =
     match xElement.XPathSelectElements("//project:" + elementName, projectNamespaceManager) with
     | null -> None
-    | xe -> Some (Array.ofSeq xe)
+    | xe -> Array.ofSeq xe |> Some
 
 let getElementByName (xElement: XNode) elementName =
     match xElement.XPathSelectElement elementName with
     | null -> None
-    | xe -> Some (xe)
+    | xe -> Some xe
 
 let getElementsByName (xElement: XNode) elementName =
     match xElement.XPathSelectElements elementName with
     | null -> None
-    | xe -> Some (Array.ofSeq xe)
+    | xe -> Array.ofSeq xe |> Some
 
 let getAttribute (xElement: XElement) attributeName =
     match xElement.Attribute <| XName.Get attributeName with
     | null -> None
-    | attribute -> Some (attribute)
+    | attribute -> Some attribute
 
 let getAttributeValue xElement attributeName =
     match getAttribute xElement attributeName with
     | None -> None
     | Some attribute -> match attribute.Value with
                         | null -> None
-                        | value -> Some (value)
+                        | value -> Some value
 
 let private mapElementsBase elementLookup xdoc xPath elementSelector =
     match elementLookup xdoc xPath with
-    | Some elements -> Some (Array.map elementSelector elements)
+    | Some elements -> Array.map elementSelector elements |> Some
     | None -> None
 
 let mapProjectElements xdoc xPath elementSelector =
