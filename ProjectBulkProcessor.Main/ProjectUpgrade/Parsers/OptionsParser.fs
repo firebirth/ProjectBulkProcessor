@@ -30,8 +30,7 @@ let private getAttributeList (assemblyInfo: SyntaxTree option) =
     | Some ai -> let root = ai.GetRoot() :?> CompilationUnitSyntax 
                  root.AttributeLists
                  |> Seq.collect (fun al -> al.Attributes)
-                 |> Array.ofSeq
-    | None -> Array.empty
+    | None -> Seq.empty
 
 let private buildAttributeValue (attribute: AttributeSyntax) =
     attribute.ArgumentList.Arguments
@@ -50,7 +49,7 @@ let private buildAttributeOptions opts attributes =
                                             | _ -> optionState
         | _ -> optionState
 
-    Array.fold optionBuilder opts attributes
+    Seq.fold optionBuilder opts attributes
 
 let private buildCsprojOptions  (xdoc: XDocument) opts =
     let newFramework = match XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion" with

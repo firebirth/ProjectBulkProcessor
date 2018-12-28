@@ -19,7 +19,6 @@ let getProjectElementByName (xElement: XNode) elementName =
 let getProjectElementsByName (xElement: XNode) elementName =
     xElement.XPathSelectElements("//project:" + elementName, projectNamespaceManager)
     |> nullHandler
-    |> Option.map Array.ofSeq
 
 let getElementByName (xElement: XNode) elementName =
     xElement.XPathSelectElement elementName
@@ -28,7 +27,6 @@ let getElementByName (xElement: XNode) elementName =
 let getElementsByName (xElement: XNode) elementName =
     xElement.XPathSelectElements elementName
     |> nullHandler
-    |> Option.map Array.ofSeq
 
 let getAttribute (xElement: XElement) attributeName =
     XName.Get attributeName
@@ -42,7 +40,7 @@ let getAttributeValue xElement attributeName =
 
 let private mapElementsBase xdoc xPath elementSelector elementLookup =
     elementLookup xdoc xPath
-    |> Option.map (Array.map elementSelector)
+    |> Option.map (Seq.map elementSelector)
 
 let mapProjectElements elementSelector xdoc xPath =
     mapElementsBase xdoc xPath elementSelector getProjectElementsByName

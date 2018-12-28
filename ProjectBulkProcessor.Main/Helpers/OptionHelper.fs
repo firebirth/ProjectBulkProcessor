@@ -1,3 +1,3 @@
 ﻿module OptionHelper
 
-let filterNones arr = arr |> Array.filter Option.isSome |> Array.map Option.get
+let filterNones col = col |> Seq.filter Option.isSome |> Seq.map Option.get
