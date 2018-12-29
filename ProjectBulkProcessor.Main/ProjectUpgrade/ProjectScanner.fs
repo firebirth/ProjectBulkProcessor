@@ -13,29 +13,21 @@ type private ParsedProjectFile = {
     project: XDocument;
     packages: XDocument option;
     assemblyInfo: SyntaxTree option;
-    filesToRemove: string[];
+    filesToRemove: string seq;
 }
 
-type ProjectInfo = {
+type ProjectUpgradeInfo = {
     projectPath: string;
     options: Options;
-    dependencies: Dependency array option;
-    references: Reference array option;
-    filesToRemove: string array;
+    dependencies: Dependency seq;
+    references: Reference seq;
+    filesToRemove: string seq;
 }
-
-let private findProjectFiles rootPath =
-    let fileInfoMapper filePath = FileInfo filePath
-    Directory.GetFiles(rootPath, "*.csproj", SearchOption.AllDirectories)
-    |> Seq.map fileInfoMapper
 
 let private buildSyntaxTree filename =
     use stream = File.OpenText filename
     stream.ReadToEnd()
     |> CSharpSyntaxTree.ParseText
-
-let private readXml filePath =
-    using (File.OpenRead filePath) XDocument.Load
 
 let private findProjectRelatedFile filename (projectFile: FileInfo)  =
     Directory.GetFiles(projectFile.DirectoryName, filename, SearchOption.AllDirectories)
@@ -46,8 +38,8 @@ let private readProjectFiles (projectFile: FileInfo) =
     let assemblyInfo = findProjectRelatedFile "AssemblyInfo.cs" projectFile
     {
         projectPath = projectFile.FullName;
-        project = readXml projectFile.FullName;
-        packages = packages |> Option.map readXml;
+        project = XmlHelpers.readXml projectFile.FullName;
+        packages = packages |> Option.map XmlHelpers.readXml;
         assemblyInfo = assemblyInfo |> Option.map buildSyntaxTree;
         filesToRemove = [ packages; assemblyInfo ] |> OptionHelper.filterNones |> Array.ofSeq
     }
@@ -55,13 +47,15 @@ let private readProjectFiles (projectFile: FileInfo) =
 let private buildProjectInfo projectFile =
     {
         options = OptionsParser.buildProjectOptions projectFile.assemblyInfo projectFile.project;
-        dependencies = DependencyParser.findPackageElements projectFile.packages |> Option.map Array.ofSeq;
-        references = ReferenceParser.findProjectReferences projectFile.project |> Option.map Array.ofSeq;
+        dependencies = match projectFile.packages with
+                       | Some p -> DependencyParser.findPackageElements p
+                       | None -> Seq.empty
+        references = ReferenceParser.findProjectReferences projectFile.project;
         projectPath = projectFile.projectPath;
         filesToRemove = projectFile.filesToRemove;
     }
 
 let getProjectInfos rootPath = 
     rootPath
-    |> findProjectFiles
+    |> ProjectFileHelper.findProjectFiles
     |> Seq.map (readProjectFiles >> buildProjectInfo)

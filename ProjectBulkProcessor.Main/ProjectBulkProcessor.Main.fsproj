@@ -6,14 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Helpers\NullHelper.fs" />
+    <Compile Include="Helpers\ProjectFileHelper.fs" />
     <Compile Include="Helpers\OptionHelper.fs" />
     <Compile Include="Helpers\XmlHelpers.fs" />
+    <Compile Include="Helpers\DependencyParser.fs" />
     <Compile Include="ProjectUpgrade\Parsers\OptionsParser.fs" />
-    <Compile Include="ProjectUpgrade\Parsers\DependencyParser.fs" />
     <Compile Include="ProjectUpgrade\Parsers\ReferenceParser.fs" />
     <Compile Include="ProjectUpgrade\ProjectScanner.fs" />
     <Compile Include="ProjectUpgrade\ProjectBuilder.fs" />
     <Compile Include="ProjectUpgrade\UpgradeProcessor.fs" />
+    <Compile Include="DependencyClean\DependencyTreeBuilder.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

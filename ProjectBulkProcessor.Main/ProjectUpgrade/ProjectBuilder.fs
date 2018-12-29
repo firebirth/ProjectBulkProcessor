@@ -39,11 +39,10 @@ let private buildElements projectInfo =
     let itemGroup content = XElement "ItemGroup" content
     let propertyGroup content = XElement "PropertyGroup" content
     [|
-        mapOptionsToElements projectInfo.options |> propertyGroup |> Some;
-        Option.map mapDependencyToElements projectInfo.dependencies |> Option.map itemGroup;
-        Option.map mapReferenceToElements projectInfo.references |> Option.map itemGroup;
+        mapOptionsToElements projectInfo.options |> propertyGroup;
+        mapDependencyToElements projectInfo.dependencies |> itemGroup;
+        mapReferenceToElements projectInfo.references |> itemGroup;
     |]
-    |> OptionHelper.filterNones
 
 let buildProject projectInfo =
     let xdoc = projectInfo 
