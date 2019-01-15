@@ -3,7 +3,6 @@
 open System.IO
 open DependencyParser
 
-
 type DependencyTree =
     | Leaf of Dependency
     | Node of Dependency * DependencyTree seq
@@ -11,7 +10,6 @@ type DependencyTree =
 let private dependencyParser (fi: FileInfo) =
     let parser = XmlHelpers.readXml >> DependencyParser.findPackageElements
     (parser fi.FullName, fi)
-    
 
 let buildTree root =
     ProjectFileHelper.findProjectFiles root

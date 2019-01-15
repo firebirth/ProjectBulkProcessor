@@ -51,7 +51,7 @@ let private buildAttributeOptions opts attributes =
 
     Seq.fold optionBuilder opts attributes
 
-let private buildCsprojOptions  (xdoc: XDocument) opts =
+let private buildCsprojOptions opts (xdoc: XDocument) =
     let newFramework = match XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion" with
                        | None -> "net471"
                        | Some xml -> match xml.Value with
@@ -62,7 +62,5 @@ let private buildCsprojOptions  (xdoc: XDocument) opts =
                      |> Option.map (fun x -> x.Value)
     { opts with targetFramework = newFramework; outputType = outputType }
 
-let buildProjectOptions assemblyInfo project =
-    Options.defaultOptions
-    |> buildAttributeOptions <| getAttributeList assemblyInfo
-    |> buildCsprojOptions project
+let buildProjectOptions : (SyntaxTree option -> XDocument -> Options) =
+    getAttributeList >> buildAttributeOptions Options.defaultOptions >> buildCsprojOptions

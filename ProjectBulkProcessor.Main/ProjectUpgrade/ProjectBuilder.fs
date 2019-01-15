@@ -6,9 +6,9 @@ open OptionsParser
 open ProjectScanner
 open System.Xml.Linq
 
-let private XAttribute name value = new XAttribute(XName.Get name, value)
-let private XElement<'a> name (value: 'a when 'a :> obj) = new XElement(XName.Get name, value)
-let private XDocument<'a> (content: 'a seq when 'a :> obj) = new XDocument(content)
+let private XAttribute name value = XAttribute (XName.Get name, value)
+let private XElement<'a> name (value: 'a when 'a :> obj) = XElement (XName.Get name, value)
+let private XDocument<'a> (content: 'a seq when 'a :> obj) = XDocument content
 
 let private mapDependencyToElements dependencies =
     let mapper dependecy =
@@ -24,7 +24,7 @@ let private mapReferenceToElements references =
     
 let private mapOptionsToElements options =
     let mapElement elementName elementValue = Option.map (XElement elementName) elementValue
-    [|
+    [
         Some (XElement "TargetFramework" options.targetFramework);
         mapElement "OutputType" options.outputType;
         mapElement "Copyright" options.copyright;
@@ -33,16 +33,17 @@ let private mapOptionsToElements options =
         mapElement "Description" options.description;
         mapElement "Version" options.version;
         mapElement "Product" options.product;
-    |] |> OptionHelper.filterNones
+    ]
+    |> OptionHelper.filterNones
 
 let private buildElements projectInfo =
     let itemGroup content = XElement "ItemGroup" content
     let propertyGroup content = XElement "PropertyGroup" content
-    [|
+    [
         mapOptionsToElements projectInfo.options |> propertyGroup;
         mapDependencyToElements projectInfo.dependencies |> itemGroup;
         mapReferenceToElements projectInfo.references |> itemGroup;
-    |]
+    ]
 
 let buildProject projectInfo =
     let xdoc = projectInfo 

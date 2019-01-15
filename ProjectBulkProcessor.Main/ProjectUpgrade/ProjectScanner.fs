@@ -39,9 +39,9 @@ let private readProjectFiles (projectFile: FileInfo) =
     {
         projectPath = projectFile.FullName;
         project = XmlHelpers.readXml projectFile.FullName;
-        packages = packages |> Option.map XmlHelpers.readXml;
-        assemblyInfo = assemblyInfo |> Option.map buildSyntaxTree;
-        filesToRemove = [ packages; assemblyInfo ] |> OptionHelper.filterNones |> Array.ofSeq
+        packages = Option.map XmlHelpers.readXml packages;
+        assemblyInfo = Option.map buildSyntaxTree assemblyInfo;
+        filesToRemove = OptionHelper.filterNones [ packages; assemblyInfo ]
     }
 
 let private buildProjectInfo projectFile =
@@ -55,7 +55,4 @@ let private buildProjectInfo projectFile =
         filesToRemove = projectFile.filesToRemove;
     }
 
-let getProjectInfos rootPath = 
-    rootPath
-    |> ProjectFileHelper.findProjectFiles
-    |> Seq.map (readProjectFiles >> buildProjectInfo)
+let getProjectInfos = ProjectFileHelper.findProjectFiles >> Seq.map (readProjectFiles >> buildProjectInfo)

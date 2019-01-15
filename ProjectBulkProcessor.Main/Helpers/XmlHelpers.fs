@@ -5,7 +5,7 @@ open System.Xml.Linq
 open System.Xml.XPath
 open System.IO
 
-let private projectNamespaceManager = new XmlNamespaceManager(new NameTable())
+let private projectNamespaceManager = XmlNamespaceManager (NameTable())
 do
     projectNamespaceManager.AddNamespace("project", "http://schemas.microsoft.com/developer/msbuild/2003")
 
