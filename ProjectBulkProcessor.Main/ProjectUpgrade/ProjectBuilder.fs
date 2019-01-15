@@ -10,20 +10,20 @@ let private XAttribute name value = XAttribute (XName.Get name, value)
 let private XElement<'a> name (value: 'a when 'a :> obj) = XElement (XName.Get name, value)
 let private XDocument<'a> (content: 'a seq when 'a :> obj) = XDocument content
 
-let private mapDependencyToElements dependencies =
+let private mapDependencyToElements =
     let mapper dependecy =
         let attributes = [| XAttribute "Include" dependecy.packageId; XAttribute "Version" dependecy.version |]
         XElement "PackageReference" attributes
-    Seq.map mapper dependencies
+    Seq.map mapper
 
-let private mapReferenceToElements references =
+let private mapReferenceToElements =
     let mapper reference =
         let attributes = XAttribute "Include" reference.relativePath |> Seq.singleton
         XElement "ProjectReference" attributes
-    Seq.map mapper references
+    Seq.map mapper
     
 let private mapOptionsToElements options =
-    let mapElement elementName elementValue = Option.map (XElement elementName) elementValue
+    let mapElement = XElement >> Option.map 
     [
         Some (XElement "TargetFramework" options.targetFramework);
         mapElement "OutputType" options.outputType;
@@ -37,8 +37,8 @@ let private mapOptionsToElements options =
     |> OptionHelper.filterNones
 
 let private buildElements projectInfo =
-    let itemGroup content = XElement "ItemGroup" content
-    let propertyGroup content = XElement "PropertyGroup" content
+    let itemGroup = XElement "ItemGroup"
+    let propertyGroup = XElement "PropertyGroup"
     [
         mapOptionsToElements projectInfo.options |> propertyGroup;
         mapDependencyToElements projectInfo.dependencies |> itemGroup;
@@ -46,11 +46,10 @@ let private buildElements projectInfo =
     ]
 
 let buildProject projectInfo =
-    let xdoc = projectInfo 
-               |> buildElements 
-               |> Seq.map (fun e -> e :> XObject)
-               |> Seq.append [| XAttribute "Sdk" "Microsoft.NET.Sdk" |] 
-               |> XElement "Project"
-               |> Seq.singleton
-               |> XDocument
-    (xdoc, projectInfo)
+    let documentBuilder = buildElements 
+                          >> Seq.map (fun e -> e :> XObject)
+                          >> Seq.append [ XAttribute "Sdk" "Microsoft.NET.Sdk" ] 
+                          >> XElement "Project"
+                          >> Seq.singleton
+                          >> XDocument
+    (documentBuilder projectInfo, projectInfo)

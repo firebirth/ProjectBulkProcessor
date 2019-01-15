@@ -4,9 +4,6 @@ open System.Xml.Linq
 
 type Reference = { relativePath: string; }
 
-let findProjectReferences xdoc = 
-    let elementSelector xElement =
-        XmlHelpers.getAttributeValue xElement "Include"
-        |> Option.map (fun p -> { relativePath = p })
-    XmlHelpers.mapProjectElements elementSelector xdoc "ProjectReference"
-    |> OptionHelper.filterNones
+let findProjectReferences: (XNode -> Reference seq) = 
+    let elementSelector = XmlHelpers.getAttributeValue "Include" >> Option.map (fun p -> { relativePath = p })
+    XmlHelpers.mapProjectElements elementSelector "ProjectReference" >> OptionHelper.filterNones

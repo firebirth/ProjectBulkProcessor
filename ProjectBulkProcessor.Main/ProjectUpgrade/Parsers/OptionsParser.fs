@@ -52,13 +52,13 @@ let private buildAttributeOptions opts attributes =
     Seq.fold optionBuilder opts attributes
 
 let private buildCsprojOptions opts (xdoc: XDocument) =
-    let newFramework = match XmlHelpers.getProjectElementByName xdoc "TargetFrameworkVersion" with
+    let newFramework = match XmlHelpers.getProjectElementByName "TargetFrameworkVersion" xdoc with
                        | None -> "net471"
                        | Some xml -> match xml.Value with
                                      | "v4.6.1" -> "net461"
                                      | "v4.6.2" -> "net462"
                                      | _ -> "net471"
-    let outputType = XmlHelpers.getProjectElementByName xdoc "OutputType"
+    let outputType = XmlHelpers.getProjectElementByName "OutputType" xdoc
                      |> Option.map (fun x -> x.Value)
     { opts with targetFramework = newFramework; outputType = outputType }
 

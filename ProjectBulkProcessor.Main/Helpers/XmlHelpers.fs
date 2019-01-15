@@ -9,27 +9,23 @@ let private projectNamespaceManager = XmlNamespaceManager (NameTable())
 do
     projectNamespaceManager.AddNamespace("project", "http://schemas.microsoft.com/developer/msbuild/2003")
 
-let getProjectElementByName (xElement: XNode) elementName =
+let getProjectElementByName elementName (xElement: XNode) =
     xElement.XPathSelectElement("//project:" + elementName, projectNamespaceManager)
     |> NullHelper.handle
 
-let getProjectElementsByName (xElement: XNode) elementName =
+let getProjectElementsByName elementName (xElement: XNode) =
     xElement.XPathSelectElements("//project:" + elementName, projectNamespaceManager)
 
-let getElementByName (xElement: XNode) elementName =
-    xElement.XPathSelectElement elementName
-    |> NullHelper.handle
-
-let getElementsByName (xElement: XNode) elementName =
+let getElementsByName elementName (xElement: XNode)  =
     xElement.XPathSelectElements elementName
 
-let getAttribute (xElement: XElement) attributeName =
+let getAttribute attributeName (xElement: XElement) =
     XName.Get attributeName
     |> xElement.Attribute
     |> NullHelper.handle
 
-let getAttributeValue xElement attributeName =
-    getAttribute xElement attributeName
+let getAttributeValue attributeName xElement  =
+    getAttribute attributeName xElement 
     |> Option.map (fun a -> a.Value |> NullHelper.handle)
     |> Option.flatten
 

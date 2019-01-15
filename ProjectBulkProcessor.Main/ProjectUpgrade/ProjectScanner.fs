@@ -29,13 +29,14 @@ let private buildSyntaxTree filename =
     stream.ReadToEnd()
     |> CSharpSyntaxTree.ParseText
 
-let private findProjectRelatedFile filename (projectFile: FileInfo)  =
+let private findProjectRelatedFile (projectFile: FileInfo) filename =
     Directory.GetFiles(projectFile.DirectoryName, filename, SearchOption.AllDirectories)
     |> Seq.tryFind (fun _ -> true)
 
 let private readProjectFiles (projectFile: FileInfo) =
-    let packages = findProjectRelatedFile "packages.config" projectFile
-    let assemblyInfo = findProjectRelatedFile "AssemblyInfo.cs" projectFile
+    let finder = findProjectRelatedFile projectFile
+    let packages = finder "packages.config"
+    let assemblyInfo = finder "AssemblyInfo.cs"
     {
         projectPath = projectFile.FullName;
         project = XmlHelpers.readXml projectFile.FullName;
