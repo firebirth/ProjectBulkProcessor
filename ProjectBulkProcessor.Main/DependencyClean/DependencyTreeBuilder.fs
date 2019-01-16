@@ -1,16 +1,14 @@
-﻿module DependencyTreeBuilder
+module DependencyTreeBuilder
 
-open System.IO
 open DependencyParser
+open System.IO
 
 type DependencyTree =
     | Leaf of Dependency
     | Node of Dependency * DependencyTree seq
 
-let private dependencyParser (fi: FileInfo) =
-    let parser = XmlHelpers.readXml >> DependencyParser.findPackageElements
-    (parser fi.FullName, fi)
+let private dependencyParser (fi : FileInfo) =
+    let xml = XmlHelpers.readXml fi.FullName
+    (DependencyParser.findPackageElements xml, ReferenceParser.findProjectReferences xml, fi)
 
-let buildTree root =
-    ProjectFileHelper.findProjectFiles root
-    |> Seq.map dependencyParser
+let buildTree = ProjectFileHelper.findProjectFiles >> Seq.map dependencyParser

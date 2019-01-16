@@ -1,6 +1,6 @@
-﻿module UpgradeProcessor
+module UpgradeProcessor
 
-let upgradeProjects = 
+let upgradeProjects =
     ProjectScanner.getProjectInfos
     >> Seq.map ProjectBuilder.buildProject
     >> Seq.iter (fun (p, i) -> p.Save(i.projectPath))
