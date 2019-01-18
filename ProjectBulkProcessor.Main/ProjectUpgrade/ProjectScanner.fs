@@ -17,7 +17,7 @@ type private ParsedProjectFile =
 
 type ProjectUpgradeInfo =
     { projectPath : string
-      options : Options
+      options : UpgradeOptions
       dependencies : Dependency seq
       references : Reference seq
       filesToRemove : string seq }
@@ -27,7 +27,8 @@ let private buildSyntaxTree filename =
     stream.ReadToEnd() |> CSharpSyntaxTree.ParseText
 
 let private findProjectRelatedFile (projectFile : FileInfo) filename =
-    Directory.GetFiles(projectFile.DirectoryName, filename, SearchOption.AllDirectories) |> Seq.tryHead
+    Directory.GetFiles(projectFile.DirectoryName, filename, SearchOption.AllDirectories)
+    |> Seq.tryHead
 
 let private readProjectFiles (projectFile : FileInfo) =
     let finder = findProjectRelatedFile projectFile
@@ -41,12 +42,12 @@ let private readProjectFiles (projectFile : FileInfo) =
 
 let private buildProjectInfo projectFile =
     { options = OptionsParser.buildProjectOptions projectFile.assemblyInfo projectFile.project
-      dependencies =
-          match projectFile.packages with
-          | Some p -> DependencyParser.findPackageElements p
-          | None -> Seq.empty
+      dependencies = match projectFile.packages with
+                     | Some p -> DependencyParser.findPackageElements p
+                     | None -> Seq.empty
       references = ReferenceParser.findProjectReferences projectFile.project
       projectPath = projectFile.projectPath
       filesToRemove = projectFile.filesToRemove }
 
-let getProjectInfos = ProjectFileHelper.findProjectFiles >> Seq.map (readProjectFiles >> buildProjectInfo)
+let getProjectInfos =
+    ProjectFileHelper.findProjectFiles >> Seq.map (readProjectFiles >> buildProjectInfo)

@@ -2,13 +2,24 @@ module DependencyTreeBuilder
 
 open DependencyParser
 open System.IO
+open ReferenceParser
 
-type DependencyTree =
-    | Leaf of Dependency
-    | Node of Dependency * DependencyTree seq
+type DependencyTree<'a> =
+    | Leaf of 'a
+    | Node of 'a * DependencyTree<'a> seq
+
+type Project =
+    { dependecies: Dependency array
+      references: Reference array
+      file: FileInfo }
 
 let private dependencyParser (fi : FileInfo) =
     let xml = XmlHelpers.readXml fi.FullName
-    (DependencyParser.findPackageElements xml, ReferenceParser.findProjectReferences xml, fi)
+    { dependecies = DependencyParser.findPackageElements xml |> Array.ofSeq
+      references = ReferenceParser.findProjectReferences xml |> Array.ofSeq
+      file = fi }
 
-let buildTree = ProjectFileHelper.findProjectFiles >> Seq.map dependencyParser
+let buildTree root =
+    let projects = (ProjectFileHelper.findProjectFiles >> Seq.map dependencyParser) root
+    let root = Seq.find (fun p -> p.references.Length = 0) projects
+

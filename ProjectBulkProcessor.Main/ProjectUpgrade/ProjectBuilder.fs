@@ -6,9 +6,14 @@ open ProjectScanner
 open ReferenceParser
 open System.Xml.Linq
 
-let private XAttribute name value = XAttribute(XName.Get name, value)
-let private XElement<'a> name (value : 'a :> obj) = XElement(XName.Get name, value)
-let private XDocument<'a>(content : 'a seq when 'a :> obj) = XDocument content
+let private XAttribute name value =
+    XAttribute(XName.Get name, value)
+
+let private XElement<'a> name (value : 'a :> obj) =
+    XElement(XName.Get name, value)
+
+let private XDocument<'a>(content : 'a seq when 'a :> obj) =
+    XDocument content
 
 let private mapDependencyToElements =
     let mapper dependecy =

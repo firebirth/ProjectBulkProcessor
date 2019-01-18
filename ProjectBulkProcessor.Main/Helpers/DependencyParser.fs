@@ -8,10 +8,7 @@ type Dependency =
 
 let findPackageElements xdoc =
     let elementSelector (xElement : XElement) =
-        let mapper id version =
-            { packageId = id
-              version = version }
-
+        let mapper id version = { packageId = id; version = version }
         let id = XmlHelpers.getAttributeValue "id" xElement
         let version = XmlHelpers.getAttributeValue "version" xElement
         Option.map2 mapper id version

@@ -4,7 +4,7 @@ open Microsoft.CodeAnalysis
 open Microsoft.CodeAnalysis.CSharp.Syntax
 open System.Xml.Linq
 
-type Options =
+type UpgradeOptions =
     { targetFramework : string
       outputType : string option
       copyright : string option
@@ -63,7 +63,7 @@ let private buildCsprojOptions opts (xdoc : XDocument) =
     { opts with targetFramework = newFramework
                 outputType = outputType }
 
-let buildProjectOptions : SyntaxTree option -> XDocument -> Options =
+let buildProjectOptions : SyntaxTree option -> XDocument -> UpgradeOptions =
     getAttributeList
-    >> buildAttributeOptions Options.defaultOptions
+    >> buildAttributeOptions UpgradeOptions.defaultOptions
     >> buildCsprojOptions
