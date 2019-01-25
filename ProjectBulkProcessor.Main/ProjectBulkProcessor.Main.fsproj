@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Helpers\NullHelper.fs" />
     <Compile Include="Helpers\ProjectFileHelper.fs" />
     <Compile Include="Helpers\OptionHelper.fs" />
     <Compile Include="Helpers\XmlHelpers.fs" />

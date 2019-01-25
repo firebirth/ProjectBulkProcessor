@@ -11,7 +11,7 @@ do projectNamespaceManager.AddNamespace("project", "http://schemas.microsoft.com
 
 let getProjectElementByName elementName xElement =
     Extensions.XPathSelectElement(xElement, "//project:" + elementName, projectNamespaceManager)
-    |> NullHelper.handle
+    |> Option.ofObj
 
 let getProjectElementsByName elementName xElement =
     Extensions.XPathSelectElements(xElement, "//project:" + elementName, projectNamespaceManager)
@@ -22,11 +22,11 @@ let getElementsByName elementName xElement =
 let getAttribute attributeName (xElement : XElement) =
     XName.Get attributeName
     |> xElement.Attribute
-    |> NullHelper.handle
+    |> Option.ofObj
 
 let getAttributeValue attributeName xElement =
     getAttribute attributeName xElement
-    |> Option.map (fun a -> a.Value |> NullHelper.handle)
+    |> Option.map (fun a -> a.Value |> Option.ofObj)
     |> Option.flatten
 
 let private mapElementsBase xdoc xPath elementSelector elementLookup =
