@@ -15,9 +15,11 @@ let getProjectElementByName elementName xElement =
 
 let getProjectElementsByName elementName xElement =
     Extensions.XPathSelectElements(xElement, "//project:" + elementName, projectNamespaceManager)
+    |> List.ofSeq
 
 let getElementsByName elementName xElement =
     Extensions.XPathSelectElements(xElement, elementName)
+    |> List.ofSeq
 
 let getAttribute attributeName (xElement : XElement) =
     XName.Get attributeName
@@ -25,18 +27,19 @@ let getAttribute attributeName (xElement : XElement) =
     |> Option.ofObj
 
 let getAttributeValue attributeName xElement =
+    let mapAttributeValue (attr: XAttribute) = attr.Value |> Option.ofObj
     getAttribute attributeName xElement
-    |> Option.map (fun a -> a.Value |> Option.ofObj)
+    |> Option.map mapAttributeValue
     |> Option.flatten
 
-let private mapElementsBase xdoc xPath elementSelector elementLookup =
-    elementLookup xdoc xPath |> Seq.map elementSelector
+let private mapElementsBase elementLookup elementSelector xdoc xPath =
+    elementLookup xdoc xPath
+    |> List.map elementSelector
 
-let mapProjectElements elementSelector xdoc xPath =
-    mapElementsBase xdoc xPath elementSelector getProjectElementsByName
+let mapProjectElements elementSelector xdoc xPath = mapElementsBase getProjectElementsByName elementSelector xdoc xPath 
 
-let mapElements elementSelector xPath xdoc =
-    mapElementsBase xdoc xPath elementSelector getElementsByName
+let mapElements elementSelector xdoc xPath = mapElementsBase getElementsByName elementSelector xdoc xPath 
 
 let readXml filePath =
-    using (File.OpenRead filePath) XDocument.Load
+    use fileStream = File.OpenRead filePath
+    XDocument.Load fileStream

@@ -6,20 +6,21 @@ open ReferenceParser
 
 type DependencyTree<'a> =
     | Leaf of 'a
-    | Node of 'a * DependencyTree<'a> seq
+    | Node of 'a * DependencyTree<'a> list
 
 type Project =
-    { dependecies: Dependency array
-      references: Reference array
+    { dependecies: Dependency list
+      references: Reference list
       file: FileInfo }
 
 let private dependencyParser (fi : FileInfo) =
     let xml = XmlHelpers.readXml fi.FullName
-    { dependecies = DependencyParser.findPackageElements xml |> Array.ofSeq
-      references = ReferenceParser.findProjectReferences xml |> Array.ofSeq
+    { dependecies = DependencyParser.findPackageElements xml |> List.ofSeq
+      references = ReferenceParser.findProjectReferences xml |> List.ofSeq
       file = fi }
 
 let buildTree root =
-    let projects = (ProjectFileHelper.findProjectFiles >> Seq.map dependencyParser) root
-    let root = Seq.find (fun p -> p.references.Length = 0) projects
+    let projects = (ProjectFileHelper.findProjectFiles >> List.map dependencyParser) root
+    let root = List.find (fun p -> p.references.Length = 0) projects
+    root
 

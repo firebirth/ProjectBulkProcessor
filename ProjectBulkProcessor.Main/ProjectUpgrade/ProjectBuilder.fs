@@ -21,13 +21,13 @@ let private mapDependencyToElements =
             [| XAttribute "Include" dependecy.packageId
                XAttribute "Version" dependecy.version |]
         XElement "PackageReference" attributes
-    Seq.map mapper
+    List.map mapper
 
 let private mapReferenceToElements =
     let mapper reference =
         let attributes = XAttribute "Include" reference.relativePath |> Seq.singleton
         XElement "ProjectReference" attributes
-    Seq.map mapper
+    List.map mapper
 
 let private mapOptionsToElements options =
     let mapElement = XElement >> Option.map

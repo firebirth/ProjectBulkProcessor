@@ -27,12 +27,13 @@ let private getAttributeList (assemblyInfo : SyntaxTree option) =
     match assemblyInfo with
     | Some ai ->
         let root = ai.GetRoot() :?> CompilationUnitSyntax
-        root.AttributeLists |> Seq.collect (fun al -> al.Attributes)
-    | None -> Seq.empty
+        root.AttributeLists |> List.ofSeq |> List.collect (fun al -> al.Attributes |> List.ofSeq)
+    | None -> List.empty
 
 let private buildAttributeValue (attribute : AttributeSyntax) =
     attribute.ArgumentList.Arguments
-    |> Seq.map (fun a -> a.ToFullString().Trim '"')
+    |> List.ofSeq
+    |> List.map (fun a -> a.ToFullString().Trim '"')
     |> String.concat ","
 
 let private buildAttributeOptions opts attributes =
@@ -47,7 +48,7 @@ let private buildAttributeOptions opts attributes =
             | "AssemblyVersion" -> { optionState with version = Some(buildAttributeValue attribute) }
             | _ -> optionState
         | _ -> optionState
-    Seq.fold optionBuilder opts attributes
+    List.fold optionBuilder opts attributes
 
 let private buildCsprojOptions opts (xdoc : XDocument) =
     let newFramework =

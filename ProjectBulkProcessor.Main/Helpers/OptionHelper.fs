@@ -1,5 +1,3 @@
 module OptionHelper
 
-let filterNones<'a> : ('a option seq -> 'a seq) =
-    Seq.filter Option.isSome
-    >> Seq.map Option.get
+let filterNones<'a> : ('a option list -> 'a list) = List.filter Option.isSome >> List.map Option.get

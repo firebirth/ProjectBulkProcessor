@@ -13,14 +13,14 @@ type private ParsedProjectFile =
       project : XDocument
       packages : XDocument option
       assemblyInfo : SyntaxTree option
-      filesToRemove : string seq }
+      filesToRemove : string list }
 
 type ProjectUpgradeInfo =
     { projectPath : string
       options : UpgradeOptions
-      dependencies : Dependency seq
-      references : Reference seq
-      filesToRemove : string seq }
+      dependencies : Dependency list
+      references : Reference list
+      filesToRemove : string list }
 
 let private buildSyntaxTree filename =
     use stream = File.OpenText filename
@@ -28,7 +28,7 @@ let private buildSyntaxTree filename =
 
 let private findProjectRelatedFile (projectFile : FileInfo) filename =
     Directory.GetFiles(projectFile.DirectoryName, filename, SearchOption.AllDirectories)
-    |> Seq.tryHead
+    |> Array.tryHead
 
 let private readProjectFiles (projectFile : FileInfo) =
     let finder = findProjectRelatedFile projectFile
@@ -44,10 +44,10 @@ let private buildProjectInfo projectFile =
     { options = OptionsParser.buildProjectOptions projectFile.assemblyInfo projectFile.project
       dependencies = match projectFile.packages with
                      | Some p -> DependencyParser.findPackageElements p
-                     | None -> Seq.empty
+                     | None -> List.empty
       references = ReferenceParser.findProjectReferences projectFile.project
       projectPath = projectFile.projectPath
       filesToRemove = projectFile.filesToRemove }
 
 let getProjectInfos =
-    ProjectFileHelper.findProjectFiles >> Seq.map (readProjectFiles >> buildProjectInfo)
+    ProjectFileHelper.findProjectFiles >> List.map (readProjectFiles >> buildProjectInfo)

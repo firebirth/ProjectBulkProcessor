@@ -12,4 +12,4 @@ let findPackageElements xdoc =
         let id = XmlHelpers.getAttributeValue "id" xElement
         let version = XmlHelpers.getAttributeValue "version" xElement
         Option.map2 mapper id version
-    XmlHelpers.mapElements elementSelector xdoc "//package" |> OptionHelper.filterNones
+    XmlHelpers.mapElements elementSelector "//package" xdoc |> OptionHelper.filterNones
