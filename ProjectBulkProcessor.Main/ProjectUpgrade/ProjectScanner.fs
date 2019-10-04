@@ -4,7 +4,6 @@ open DependencyParser
 open Microsoft.CodeAnalysis
 open Microsoft.CodeAnalysis.CSharp
 open OptionsParser
-open ReferenceParser
 open System.IO
 open System.Xml.Linq
 
@@ -15,11 +14,15 @@ type private ParsedProjectFile =
       assemblyInfo : SyntaxTree option
       filesToRemove : string list }
 
-type ProjectUpgradeInfo =
-    { projectPath : string
-      options : UpgradeOptions
+type Project =
+    { projectPath : FileInfo
       dependencies : Dependency list
-      references : Reference list
+      references : Reference list }
+and Reference = Project of Project
+
+type ProjectUpgradeInfo =
+    { project: Project
+      options : UpgradeOptions
       filesToRemove : string list }
 
 let private buildSyntaxTree filename =
@@ -39,6 +42,8 @@ let private readProjectFiles (projectFile : FileInfo) =
       packages = Option.map XmlHelpers.readXml packages
       assemblyInfo = Option.map buildSyntaxTree assemblyInfo
       filesToRemove = OptionHelper.filterNones [ packages; assemblyInfo ] }
+
+let private 
 
 let private buildProjectInfo projectFile =
     { options = OptionsParser.buildProjectOptions projectFile.assemblyInfo projectFile.project
