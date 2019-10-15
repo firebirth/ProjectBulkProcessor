@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Helpers\ProjectFileHelper.fs" />
+    <Compile Include="Helpers\OptionHelper.fs" />
+    <Compile Include="Helpers\XmlHelpers.fs" />
+    <Compile Include="Helpers\DependencyParser.fs" />
+    <Compile Include="ProjectUpgrade\Parsers\OptionsParser.fs" />
+    <Compile Include="ProjectUpgrade\Parsers\ReferenceParser.fs" />
+    <Compile Include="ProjectUpgrade\ProjectScanner.fs" />
+    <Compile Include="ProjectUpgrade\ProjectBuilder.fs" />
+    <Compile Include="ProjectUpgrade\UpgradeProcessor.fs" />
+    <Compile Include="DependencyClean\DependencyTreeBuilder.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.10.0" />
+  </ItemGroup>
+
+</Project>
